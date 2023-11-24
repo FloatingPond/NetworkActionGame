@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerLocomotionController : NetworkBehaviour
 {
+    [SerializeField] private CharacterController _CharacterController;
+
     [SyncVar(hook = nameof(UpdateColour))]
     Color newColor;
 
@@ -18,12 +20,23 @@ public class PlayerLocomotionController : NetworkBehaviour
         }
     }
 
-    [Server]
-    private void StartServer()
+
+
+    #region Client-Server Code (Commands)
+
+    [Command]
+    private void OnMove(Vector2 newVal)
     {
-        Debug.Log("Starting Server...");
+        if (newVal == Vector2.zero) return;
+        
+        SendMessageRPC(netIdentity + ": " + newVal);
+        //ChangeColour();
+        RequestMovement(newVal);
     }
 
+    #endregion
+
+    #region Client-Side Code
     [Client]
     private void StartClient()
     {
@@ -33,6 +46,9 @@ public class PlayerLocomotionController : NetworkBehaviour
             Debug.Log("Client subscribing to inputs...");
             PlayerInputs.Instance.OnMove -= OnMove;
             PlayerInputs.Instance.OnMove += OnMove;
+
+            Camera.main.transform.SetParent(gameObject.transform);
+            Camera.main.transform.localPosition = new Vector3(0, 1, -5);
         }
     }
 
@@ -49,19 +65,20 @@ public class PlayerLocomotionController : NetworkBehaviour
     private void OnDisable()
     {
         PlayerInputs.Instance.OnMove -= OnMove;
-    }
-
-    [Command]
-    private void OnMove(Vector2 newVal)
+    }    
+    
+    [Client]
+    private void UpdateColour(Color _, Color newCol)
     {
-        SendMessageRPC(netIdentity + ": " + newVal);
-        ChangeColour();
+        gameObject.GetComponent<Renderer>().material.color = newColor;
     }
+    #endregion
 
-    [ClientRpc]
-    private void SendMessageRPC(string newMessage)
+    #region Server-Side Code
+    [Server]
+    private void StartServer()
     {
-        Debug.Log(newMessage);
+        Debug.Log("Starting Server...");
     }
 
     [Server]
@@ -71,9 +88,30 @@ public class PlayerLocomotionController : NetworkBehaviour
         gameObject.GetComponent<Renderer>().material.color = newColor;
     }
 
-    [Client]
-    private void UpdateColour(Color _, Color newCol)
+    [Server]
+    private void RequestMovement(Vector2 moveVect)
     {
-        gameObject.GetComponent<Renderer>().material.color = newColor;
+        float grav;
+
+        if(_CharacterController.isGrounded)
+        {
+            grav = 0;
+        }
+        else
+        {
+            grav = -9.81f * Time.fixedDeltaTime;
+        }
+
+        _CharacterController.Move((new Vector3(moveVect.y * transform.forward.x, grav, moveVect.y * transform.forward.z)
+                + new Vector3(moveVect.x * transform.right.x,
+                                _CharacterController.velocity.y * transform.forward.y,
+                                moveVect.x * transform.right.z)) * (10 * Time.fixedDeltaTime));
+    }
+    #endregion
+
+    [ClientRpc]
+    private void SendMessageRPC(string newMessage)
+    {
+        Debug.Log(newMessage);
     }
 }

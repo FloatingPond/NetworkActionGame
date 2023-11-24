@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class PlayerInputs : MonoBehaviour
 {
@@ -36,5 +37,13 @@ public class PlayerInputs : MonoBehaviour
     private void OnDisable()
     {
         inputActions.Disable();
+    }
+
+    private void Update()
+    {
+        if (inputActions.Movement.Move.IsPressed())
+        {
+            OnMove?.Invoke(inputActions.Movement.Move.ReadValue<Vector2>());
+        }
     }
 }
