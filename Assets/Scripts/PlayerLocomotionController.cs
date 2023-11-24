@@ -18,16 +18,18 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Server]
     private void StartServer()
     {
-        
+        Debug.Log("Starting Server...");
     }
 
     [Client]
     private void StartClient()
     {
+        Debug.Log("Starting Client...");
         if (PlayerInputs.Instance != null)
         {
-            PlayerInputs.Instance.OnMove -= TryMove;
-            PlayerInputs.Instance.OnMove += TryMove;
+            Debug.Log("Client subscribing to inputs...");
+            PlayerInputs.Instance.OnMove -= OnMove;
+            PlayerInputs.Instance.OnMove += OnMove;
         }
     }
 
@@ -35,23 +37,18 @@ public class PlayerLocomotionController : NetworkBehaviour
     {
         if (isLocalPlayer && PlayerInputs.Instance != null)
         {
-            PlayerInputs.Instance.OnMove += TryMove;
+            PlayerInputs.Instance.OnMove += OnMove;
         }
     }
 
     private void OnDisable()
     {
-        PlayerInputs.Instance.OnMove -= TryMove;
+        PlayerInputs.Instance.OnMove -= OnMove;
     }
 
     [Command]
     private void OnMove(Vector2 newVal)
     {
         Debug.Log(netIdentity + ": " + newVal);
-    }
-    private void TryMove(Vector2 newVal)
-    {
-        Debug.Log("Trying to move");
-        OnMove(newVal);
     }
 }
