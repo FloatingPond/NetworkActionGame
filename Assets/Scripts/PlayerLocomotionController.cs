@@ -72,7 +72,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     }
 
     [Client]
-    private void UpdateColour()
+    private void UpdateColour(Color _, Color newCol)
     {
         gameObject.GetComponent<Renderer>().material.color = newColor;
     }
