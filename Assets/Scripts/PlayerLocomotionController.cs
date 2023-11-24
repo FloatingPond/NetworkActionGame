@@ -105,7 +105,7 @@ public class PlayerLocomotionController : NetworkBehaviour
         _CharacterController.Move((new Vector3(moveVect.y * transform.forward.x, grav, moveVect.y * transform.forward.z)
                 + new Vector3(moveVect.x * transform.right.x,
                                 _CharacterController.velocity.y * transform.forward.y,
-                                moveVect.x * transform.right.z)) * (10 * Time.fixedDeltaTime));
+                                moveVect.x * transform.right.z)) * (2 * Time.fixedDeltaTime));
     }
     #endregion
 
@@ -113,5 +113,17 @@ public class PlayerLocomotionController : NetworkBehaviour
     private void SendMessageRPC(string newMessage)
     {
         Debug.Log(newMessage);
+    }
+
+    public override void OnStopClient()
+    {
+        Camera.main.transform.SetParent(null);
+
+        base.OnStopClient();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
     }
 }
