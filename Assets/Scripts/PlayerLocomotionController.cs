@@ -25,7 +25,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     private void StartClient()
     {
         Debug.Log("Starting Client...");
-        if (PlayerInputs.Instance != null)
+        if (isLocalPlayer && PlayerInputs.Instance != null)
         {
             Debug.Log("Client subscribing to inputs...");
             PlayerInputs.Instance.OnMove -= OnMove;
