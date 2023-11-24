@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class PlayerLocomotionController : NetworkBehaviour
 {
+    [SyncVar(hook = nameof(UpdateColour))]
+    Color newColor;
+
     private void Start()
     {
         if (isServerOnly)
@@ -64,6 +67,13 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Server]
     private void ChangeColour()
     {
-        gameObject.GetComponent<Renderer>().material.color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
+        newColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
+        gameObject.GetComponent<Renderer>().material.color = newColor;
+    }
+
+    [Client]
+    private void UpdateColour()
+    {
+        gameObject.GetComponent<Renderer>().material.color = newColor;
     }
 }
