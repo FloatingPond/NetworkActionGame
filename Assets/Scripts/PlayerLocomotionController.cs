@@ -5,7 +5,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 {
     private void Start()
     {
-        if (isServer)
+        if (isServerOnly)
         {
             StartServer();
         }
@@ -49,6 +49,11 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Command]
     private void OnMove(Vector2 newVal)
     {
-        Debug.Log(netIdentity + ": " + newVal);
+        SendMessageRPC(netIdentity + ": " + newVal);
+    }
+    [ClientRpc]
+    private void SendMessageRPC(string newMessage)
+    {
+        
     }
 }
