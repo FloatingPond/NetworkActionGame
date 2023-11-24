@@ -54,6 +54,6 @@ public class PlayerLocomotionController : NetworkBehaviour
     [ClientRpc]
     private void SendMessageRPC(string newMessage)
     {
-        
+        Debug.Log(newMessage);
     }
 }
