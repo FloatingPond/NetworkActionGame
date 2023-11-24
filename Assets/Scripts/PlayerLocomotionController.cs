@@ -33,6 +33,7 @@ public class PlayerLocomotionController : NetworkBehaviour
         }
     }
 
+    [Client]
     private void OnEnable()
     {
         if (isLocalPlayer && PlayerInputs.Instance != null)
@@ -41,6 +42,7 @@ public class PlayerLocomotionController : NetworkBehaviour
         }
     }
 
+    [Client]
     private void OnDisable()
     {
         PlayerInputs.Instance.OnMove -= OnMove;
@@ -50,10 +52,18 @@ public class PlayerLocomotionController : NetworkBehaviour
     private void OnMove(Vector2 newVal)
     {
         SendMessageRPC(netIdentity + ": " + newVal);
+        ChangeColour();
     }
+
     [ClientRpc]
     private void SendMessageRPC(string newMessage)
     {
         Debug.Log(newMessage);
+    }
+
+    [Server]
+    private void ChangeColour()
+    {
+        gameObject.GetComponent<Renderer>().material.color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
     }
 }
