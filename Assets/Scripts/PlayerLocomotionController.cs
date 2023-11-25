@@ -125,5 +125,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
+
+        transform.position = GameObject.Find("TestSpawnPoint").transform.position;
     }
 }
