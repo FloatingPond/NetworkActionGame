@@ -8,6 +8,9 @@ public class PlayerLocomotionController : NetworkBehaviour
     [SyncVar(hook = nameof(UpdateColour))]
     Color newColor;
 
+    [SerializeField]
+    bool freeLook = false;
+
     private void Start()
     {
         if (isServerOnly)
@@ -20,8 +23,6 @@ public class PlayerLocomotionController : NetworkBehaviour
         }
     }
 
-
-
     #region Client-Server Code (Commands)
 
     [Command]
@@ -30,10 +31,20 @@ public class PlayerLocomotionController : NetworkBehaviour
         if (newVal == Vector2.zero) return;
         
         SendMessageRPC(netIdentity + ": " + newVal);
-        //ChangeColour();
         RequestMovement(newVal);
     }
 
+    [Command]
+    private void RotatePlayerModel(Vector2 newRotation)
+    {
+        RequestPlayerRotation(newRotation);
+    }
+
+    [Command]
+    private void RequestChangeColour()
+    {
+        ChangeColour();
+    }
     #endregion
 
     #region Client-Side Code
@@ -46,10 +57,48 @@ public class PlayerLocomotionController : NetworkBehaviour
             Debug.Log("Client subscribing to inputs...");
             PlayerInputs.Instance.OnMove -= OnMove;
             PlayerInputs.Instance.OnMove += OnMove;
+            PlayerInputs.Instance.OnLook -= OnLook;
+            PlayerInputs.Instance.OnLook += OnLook;
+            PlayerInputs.Instance.freeLook -= FreeLook;
+            PlayerInputs.Instance.freeLook += FreeLook;
 
             Camera.main.transform.SetParent(gameObject.transform);
             Camera.main.transform.localPosition = new Vector3(0, 1, -5);
         }
+    }
+
+    [Client]
+    private void FreeLook(float obj)
+    {
+        if (obj == 1)
+            freeLook = true;
+        else
+        {
+            ResetCameraRotation();
+            freeLook = false;
+        }
+    }
+
+    [Client]
+    private void OnLook(Vector2 lookVect)
+    {
+        if (freeLook)
+            RotateCamera(lookVect);
+        else
+            RotatePlayerModel(lookVect);
+    }
+
+    [Client]
+    private void RotateCamera(Vector2 lookVect)
+    {
+        Camera.main.transform.RotateAround(transform.position, Vector3.up, lookVect.x * 20 * Time.fixedDeltaTime);
+    }
+
+    [Client]
+    private void ResetCameraRotation()
+    {
+        Camera.main.transform.localRotation = Quaternion.identity;
+        Camera.main.transform.localPosition = new Vector3(0,1,-5);
     }
 
     [Client]
@@ -107,6 +156,12 @@ public class PlayerLocomotionController : NetworkBehaviour
                                 _CharacterController.velocity.y * transform.forward.y,
                                 moveVect.x * transform.right.z)) * (2 * Time.fixedDeltaTime));
     }
+
+    [Server]
+    private void RequestPlayerRotation(Vector2 newRotation)
+    {
+        transform.Rotate(new Vector3(0, newRotation.x, 0) * 20 * Time.fixedDeltaTime);
+    }
     #endregion
 
     [ClientRpc]
@@ -127,5 +182,6 @@ public class PlayerLocomotionController : NetworkBehaviour
         base.OnStartClient();
 
         transform.position = GameObject.Find("TestSpawnPoint").transform.position;
+        RequestChangeColour();
     }
 }

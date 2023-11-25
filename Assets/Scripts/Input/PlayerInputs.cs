@@ -5,6 +5,7 @@ using UnityEngine.Windows;
 public class PlayerInputs : MonoBehaviour
 {
     public event Action<Vector2> OnMove, OnLook;
+    public event Action<float> freeLook;
 
     public PlayerInputActions inputActions;
     public static PlayerInputs Instance { get; private set; }
@@ -44,6 +45,15 @@ public class PlayerInputs : MonoBehaviour
         if (inputActions.Movement.Move.IsPressed())
         {
             OnMove?.Invoke(inputActions.Movement.Move.ReadValue<Vector2>());
+        }
+
+        if(inputActions.Movement.FreeLook.IsPressed())
+        {
+            freeLook?.Invoke(inputActions.Movement.FreeLook.ReadValue<float>());
+        } 
+        else if(inputActions.Movement.FreeLook.WasReleasedThisFrame())
+        {
+            freeLook?.Invoke(inputActions.Movement.FreeLook.ReadValue<float>());
         }
     }
 }
