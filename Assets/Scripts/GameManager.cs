@@ -57,5 +57,14 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Removing " + newPlayer.name + " from Player List");
         players.Remove(newPlayer);
+        switch (newPlayer.currentTeam)
+        {
+            case Team.Hider:
+                hiders.Remove(newPlayer);
+                break;
+            case Team.Seeker:
+                seekers.Remove(newPlayer);
+                break;
+        }
     }
 }

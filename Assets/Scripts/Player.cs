@@ -7,7 +7,7 @@ public class Player : NetworkBehaviour
     Color teamColor;
 
     [SyncVar(hook = nameof(ChangeTeam))]
-    Team currentTeam;
+    public Team currentTeam;
 
     [Command]
     private void RequestAdditionToList()
@@ -16,7 +16,7 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    private void RequestRemovalFromList()
+    public void RequestRemovalFromList()
     {
         GameManager.Instance.RemovePlayerFromList(this);
     }
