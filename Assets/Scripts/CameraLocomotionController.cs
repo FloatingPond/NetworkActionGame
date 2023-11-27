@@ -31,18 +31,25 @@ public class CameraLocomotionController : NetworkBehaviour
             freeLook = true;
         else
         {
-            ResetCamera();
-            freeLook = false;
+            if (freeLook)
+            {
+                ResetCamera();
+                freeLook = false;
+            }
         }
     }
 
     [Client]
     private void OnLook(Vector2 lookVect)
     {
+        Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, -lookVect.y * 20 * Time.fixedDeltaTime);
+
         if (freeLook)
             RotateCamera(lookVect);
         else
+        {
             RequestPlayerRotation(lookVect);
+        }
     }
 
     [Client]

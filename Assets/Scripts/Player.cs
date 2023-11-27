@@ -50,12 +50,14 @@ public class Player : NetworkBehaviour
     {
         base.OnStartLocalPlayer();
         
-        RequestAdditionToList();    
+        RequestAdditionToList();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public override void OnStopLocalPlayer()
     {
         RequestRemovalFromList();
+        Cursor.lockState = CursorLockMode.Confined;
 
         base.OnStopLocalPlayer();
     }
