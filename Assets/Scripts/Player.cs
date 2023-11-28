@@ -9,6 +9,9 @@ public class Player : NetworkBehaviour
     [SyncVar(hook = nameof(ChangeTeam))]
     public Team currentTeam;
 
+    [SyncVar(hook = nameof(ChangeName))]
+    public string playerName;
+
     [Command]
     private void RequestAdditionToList()
     {
@@ -28,10 +31,22 @@ public class Player : NetworkBehaviour
         UpdateTeam(newTeam);
     }
 
+    [Command]
+    public void RequestNameChange(string newName)
+    {
+        UpdatePlayerName(newName);
+    }
+
     [Client]
     private void ChangeTeam(Team _, Team newTeam)
     {
         currentTeam = newTeam;
+    }
+    
+    [Client]
+    private void ChangeName(string _, string newName)
+    {
+        name = playerName;
     }
 
     [Client]
@@ -62,11 +77,19 @@ public class Player : NetworkBehaviour
         teamColor = newColor;
     }
 
+    [Server]
+    public void UpdatePlayerName(string newName)
+    {
+        playerName = newName;
+    }
+
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
         
         RequestAdditionToList();
+        RequestNameChange(Steamworks.SteamFriends.GetPersonaName());
+
         //Cursor.lockState = CursorLockMode.Locked;
     }
 
