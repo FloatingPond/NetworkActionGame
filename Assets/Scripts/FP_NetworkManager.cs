@@ -22,6 +22,5 @@ public class FP_NetworkManager : NetworkManager
     {
         base.OnServerConnect(conn);
         UnityEngine.Debug.Log("Player " + conn.address + " connected.");
-        Invoke("GameManager.Instance.CheckRoundStartReqs", 2f);
     }
 }

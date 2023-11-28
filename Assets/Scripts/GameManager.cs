@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour
                 newPlayer.UpdateTeam(Team.Hider);
                 newPlayer.UpdateColour(hiderTeamColor);
             }
+            CheckRoundStartReqs();
         }
 
     }
@@ -240,7 +241,7 @@ public class GameManager : MonoBehaviour
         //    timeRemaining -= Time.deltaTime;
         //}
 
-        RoundStart?.Invoke();
+        //RoundStart?.Invoke();
 
     }
 }
