@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
     }
 
     [Server]
-    public void RemovePlayerFromList(Player newPlayer)
+    public void RemovePlayerFromAllLists(Player newPlayer)
     {
         Debug.Log("Removing " + newPlayer.name + " from Player List");
         players.Remove(newPlayer);
@@ -69,6 +69,30 @@ public class GameManager : MonoBehaviour
                 break;
             case Team.Seeker:
                 seekers.Remove(newPlayer);
+                break;
+        }
+    }
+
+    [Server]
+    public void SwapTeam(Player currentPlayer, Team newTeam)
+    {
+        switch (currentPlayer.currentTeam)
+        {
+            case Team.Hider:
+                hiders.Remove(currentPlayer);
+                break;
+            case Team.Seeker:
+                seekers.Remove(currentPlayer);
+                break;
+        }        
+        
+        switch (newTeam)
+        {
+            case Team.Hider:
+                hiders.Add(currentPlayer);
+                break;
+            case Team.Seeker:
+                seekers.Add(currentPlayer);
                 break;
         }
     }

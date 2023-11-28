@@ -18,12 +18,13 @@ public class Player : NetworkBehaviour
     [Command]
     public void RequestRemovalFromList()
     {
-        GameManager.Instance.RemovePlayerFromList(this);
+        GameManager.Instance.RemovePlayerFromAllLists(this);
     }
 
     [Command]
     public void RequestPlayerCollision(Team newTeam)
     {
+        GameManager.Instance.SwapTeam(this, newTeam);
         UpdateTeam(newTeam);
     }
 
@@ -43,7 +44,7 @@ public class Player : NetworkBehaviour
     public void UpdateTeam(Team newTeam)
     {
         currentTeam = newTeam;
-        switch(currentTeam)
+        switch (currentTeam)
         {
             case Team.Seeker:
                 UpdateColour(GameManager.Instance.GetSeekerTeamColor);
@@ -66,26 +67,28 @@ public class Player : NetworkBehaviour
         base.OnStartLocalPlayer();
         
         RequestAdditionToList();
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     public override void OnStopLocalPlayer()
     {
-        RequestRemovalFromList();
-        Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.lockState = CursorLockMode.Confined;
 
         base.OnStopLocalPlayer();
     }
 
-    [Client]
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent(out Player enemy))
+        if (!isLocalPlayer) return;
+
+        if (other.TryGetComponent(out Player enemy))
         {
             if (enemy.currentTeam == currentTeam) return; // The player we collided with was on our team.
-            
-            if(currentTeam == Team.Hider)
+
+            if (currentTeam == Team.Hider)
+            {
                 RequestPlayerCollision(Team.Seeker);
+            }
         }
     }
 }
