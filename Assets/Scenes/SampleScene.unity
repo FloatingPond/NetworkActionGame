@@ -1776,6 +1776,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c12d5c34268a254aa4681768c23ee55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roundTimerText: {fileID: 1196904438}
+  roundNumberText: {fileID: 679054374}
 --- !u!1 &484506491
 GameObject:
   m_ObjectHideFlags: 0

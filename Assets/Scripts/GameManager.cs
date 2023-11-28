@@ -49,6 +49,10 @@ public class GameManager : NetworkBehaviour
     [SyncVar(hook = nameof(ChangeRoundTimer))]
     public float roundTimer;
 
+    [SyncVar(hook = nameof(ChangeRoundNumber))]
+    public float roundNumber;
+
+    public event Action<string> UpdateRoundTimerEvent, UpdateRoundNumberEvent;
     private void Start()
     {
         RoundStart += UpdateStartRound;
@@ -57,13 +61,28 @@ public class GameManager : NetworkBehaviour
         RoundIntermission += UpdateRoundIntermission;
         SeekersReleased += UpdateSeekersRelease;
     }
+
     [Client]
     private void ChangeRoundTimer(float _, float newTime) 
     {
         roundTimer = newTime;
+        UpdateRoundTimerEvent?.Invoke(roundTimer.ToString());
     }
+
+    [Client]
+    private void ChangeRoundNumber(float _, float newVal)
+    {
+        roundNumber = newVal;
+        UpdateRoundNumberEvent?.Invoke(roundNumber.ToString());
+    }
+
     [Server]
     public void UpdateRoundTimer(float newTime)
+    {
+        roundTimer = newTime;
+    }
+    [Server]
+    public void UpdateRoundNumber(float newTime)
     {
         roundTimer = newTime;
     }
@@ -169,11 +188,6 @@ public class GameManager : NetworkBehaviour
         float roundLength = 10f;
         timeRemaining = roundLength;
         roundTimer = timeRemaining;
-        //while (timeRemaining > 0)
-        //{
-        //    // Update UI with time remaining
-        //    timeRemaining -= Time.deltaTime;
-        //}
 
         RoundInProgress?.Invoke();
         // Invoke RoundInProgress and SeekersReleased once timer has finished
@@ -185,12 +199,6 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Seekers will be released shortly!");
         // Count down 20 seconds to seeker release
         float seekerReleaseTimer = 20f;
-        //while (seekerReleaseTimer > 0)
-        //{
-        //    // Update UI with time remaining
-        //    seekerReleaseTimer -= Time.deltaTime;
-        //}
-
         // Open Seeker Door here
     }
 
@@ -202,13 +210,6 @@ public class GameManager : NetworkBehaviour
 
         float roundLength = 10f;
         timeRemaining = roundLength * 60;
-        //while (timeRemaining > 0)
-        //{
-        //    // Update UI with time remaining
-        //    timeRemaining -= Time.deltaTime;
-
-        //    if (hiders.Count == 0) break;
-        //}
 
         // Invoke RoundEnd
         RoundEnd?.Invoke();
@@ -230,11 +231,6 @@ public class GameManager : NetworkBehaviour
         // Count down win screen timer... (maybe 5-10seconds)
         float roundLength = 10f;
         timeRemaining = roundLength;
-        //while (timeRemaining > 0)
-        //{
-        //    // Update UI with time remaining
-        //    timeRemaining -= Time.deltaTime;
-        //}
 
         RoundIntermission?.Invoke();
         // Invoke RoundIntermission
@@ -248,11 +244,6 @@ public class GameManager : NetworkBehaviour
         // Start countdown to next round start
         float roundLength = 2f;
         timeRemaining = roundLength * 60;
-        //while (timeRemaining > 0)
-        //{
-        //    // Update UI with time remaining
-        //    timeRemaining -= Time.deltaTime;
-        //}
 
         //RoundStart?.Invoke();
 
