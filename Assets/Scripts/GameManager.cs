@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     #region Singleton
     public static GameManager Instance;
@@ -46,6 +46,9 @@ public class GameManager : MonoBehaviour
     [SerializeField, Tooltip("Shows if the round is currently in progress")]
     bool roundLive = false;
 
+    [SyncVar(hook = nameof(ChangeRoundTimer))]
+    public float roundTimer;
+
     private void Start()
     {
         RoundStart += UpdateStartRound;
@@ -54,7 +57,16 @@ public class GameManager : MonoBehaviour
         RoundIntermission += UpdateRoundIntermission;
         SeekersReleased += UpdateSeekersRelease;
     }
-
+    [Client]
+    private void ChangeRoundTimer(float _, float newTime) 
+    {
+        roundTimer = newTime;
+    }
+    [Server]
+    public void UpdateRoundTimer(float newTime)
+    {
+        roundTimer = newTime;
+    }
     [Server]
     public void CheckRoundStartReqs()
     {
@@ -156,6 +168,7 @@ public class GameManager : MonoBehaviour
 
         float roundLength = 10f;
         timeRemaining = roundLength;
+        roundTimer = timeRemaining;
         //while (timeRemaining > 0)
         //{
         //    // Update UI with time remaining
