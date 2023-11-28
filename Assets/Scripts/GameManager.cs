@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class GameManager : NetworkBehaviour
@@ -40,9 +41,6 @@ public class GameManager : NetworkBehaviour
 
     public event Action RoundStart, RoundEnd, RoundIntermission, RoundInProgress, SeekersReleased;
 
-    [SerializeField]
-    float timeRemaining = 0;
-
     [SerializeField, Tooltip("Shows if the round is currently in progress")]
     bool roundLive = false;
 
@@ -61,12 +59,19 @@ public class GameManager : NetworkBehaviour
         RoundIntermission += UpdateRoundIntermission;
         SeekersReleased += UpdateSeekersRelease;
     }
-
+    private void Update()
+    {
+        if (roundTimer > 0)
+        {
+            roundTimer -= Time.deltaTime;
+        }
+    }
     [Client]
     private void ChangeRoundTimer(float _, float newTime) 
     {
         roundTimer = newTime;
-        UpdateRoundTimerEvent?.Invoke(roundTimer.ToString());
+        string minSec = string.Format("{0}:{1:00}", (int)roundTimer / 60, (int)roundTimer % 60);
+        UpdateRoundTimerEvent?.Invoke(minSec);
     }
 
     [Client]
@@ -91,7 +96,7 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("Checking there are enough players to start a round...");
         Debug.Log("Seeker Count: " + seekers.Count + " Hider Count: " + hiders.Count);
-        if (seekers.Count + hiders.Count >= 2)
+        //if (seekers.Count + hiders.Count >= 2)
             RoundStart?.Invoke();
     }
 
@@ -186,8 +191,7 @@ public class GameManager : NetworkBehaviour
         }
 
         float roundLength = 10f;
-        timeRemaining = roundLength;
-        roundTimer = timeRemaining;
+        roundTimer = roundLength;
 
         RoundInProgress?.Invoke();
         // Invoke RoundInProgress and SeekersReleased once timer has finished
@@ -208,8 +212,8 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Updating Round Progress...");
         SeekersReleased?.Invoke();
 
-        float roundLength = 10f;
-        timeRemaining = roundLength * 60;
+        float roundLength = 600f;
+        roundTimer = roundLength;
 
         // Invoke RoundEnd
         RoundEnd?.Invoke();
@@ -219,7 +223,7 @@ public class GameManager : NetworkBehaviour
     public void UpdateEndRound()
     {
         Debug.Log("Ending Round...");
-        if(timeRemaining <= 0) 
+        if(roundTimer <= 0) 
         {
             // Hiders Win
         }
@@ -230,7 +234,7 @@ public class GameManager : NetworkBehaviour
 
         // Count down win screen timer... (maybe 5-10seconds)
         float roundLength = 10f;
-        timeRemaining = roundLength;
+        roundTimer = roundLength;
 
         RoundIntermission?.Invoke();
         // Invoke RoundIntermission
@@ -242,8 +246,8 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Round Intermission...");
         roundLive = false;
         // Start countdown to next round start
-        float roundLength = 2f;
-        timeRemaining = roundLength * 60;
+        float roundLength = 30f;
+        roundTimer = roundLength;
 
         //RoundStart?.Invoke();
 
