@@ -21,6 +21,12 @@ public class Player : NetworkBehaviour
         GameManager.Instance.RemovePlayerFromList(this);
     }
 
+    [Command]
+    public void RequestPlayerCollision(Team newTeam)
+    {
+        UpdateTeam(newTeam);
+    }
+
     [Client]
     private void ChangeTeam(Team _, Team newTeam)
     {
@@ -37,6 +43,15 @@ public class Player : NetworkBehaviour
     public void UpdateTeam(Team newTeam)
     {
         currentTeam = newTeam;
+        switch(currentTeam)
+        {
+            case Team.Seeker:
+                UpdateColour(GameManager.Instance.GetSeekerTeamColor);
+                break;
+            case Team.Hider:
+                UpdateColour(GameManager.Instance.GetHiderTeamColor);
+                break;
+        }
     }
 
     [Server]
@@ -60,6 +75,18 @@ public class Player : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Confined;
 
         base.OnStopLocalPlayer();
+    }
+
+    [Client]
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.TryGetComponent(out Player enemy))
+        {
+            if (enemy.currentTeam == currentTeam) return; // The player we collided with was on our team.
+            
+            if(currentTeam == Team.Hider)
+                RequestPlayerCollision(Team.Seeker);
+        }
     }
 }
 

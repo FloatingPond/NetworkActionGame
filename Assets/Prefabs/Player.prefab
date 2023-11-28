@@ -285,6 +285,7 @@ GameObject:
   - component: {fileID: 4463706673563388127}
   - component: {fileID: 8786913467007377062}
   - component: {fileID: 7954207793341638523}
+  - component: {fileID: 8190635157573861664}
   - component: {fileID: -6539539506316348012}
   - component: {fileID: 8342714988325629701}
   - component: {fileID: 4723184147403060526}
@@ -387,6 +388,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &8190635157573861664
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8991694895565084575}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
+  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!114 &-6539539506316348012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +521,9 @@ MonoBehaviour:
   freeLook: 0
   CameraPitch: {fileID: 3478536674055658533}
   CameraYaw: {fileID: 7597726390667220416}
+  newAngle: 0
+  newRotation: 0
+  currentRotation: 0
 --- !u!114 &-7887720447320080909
 MonoBehaviour:
   m_ObjectHideFlags: 0

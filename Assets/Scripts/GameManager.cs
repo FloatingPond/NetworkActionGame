@@ -21,8 +21,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     List<Player> seekers = new List<Player>();
+    private Color seekerTeamColor = Color.red;
+    public Color GetSeekerTeamColor => seekerTeamColor;
+
     [SerializeField]
     List<Player> hiders = new List<Player>();
+    public Color hiderTeamColor = Color.blue;
+    public Color GetHiderTeamColor => hiderTeamColor;
 
     [Server]
     public void AddPlayerToList(Player newPlayer)
@@ -34,21 +39,21 @@ public class GameManager : MonoBehaviour
         {
             seekers.Add(newPlayer);
             newPlayer.UpdateTeam(Team.Seeker);
-            newPlayer.UpdateColour(Color.red);
+            newPlayer.UpdateColour(seekerTeamColor);
         }
         else if (players.Count / (5 * seekers.Count) > 1.2f) // If there aren't enough hiders to seekers (1 seeker for every 5 hiders)
         {
             // Add newly connected player to seekers;
             seekers.Add(newPlayer);
             newPlayer.UpdateTeam(Team.Seeker);
-            newPlayer.UpdateColour(Color.red);
+            newPlayer.UpdateColour(seekerTeamColor);
         }
         else
         {
             // Add new player to hiders.
             hiders.Add(newPlayer);
             newPlayer.UpdateTeam(Team.Hider);
-            newPlayer.UpdateColour(Color.blue);
+            newPlayer.UpdateColour(hiderTeamColor);
         }
     }
 
