@@ -29,6 +29,7 @@ public class Player : NetworkBehaviour
     {
         GameManager.Instance.SwapTeam(this, newTeam);
         UpdateTeam(newTeam);
+        GameManager.Instance.CheckWinCondition();
     }
 
     [Command]

@@ -50,7 +50,7 @@ public class GameManager : NetworkBehaviour
     [SyncVar(hook = nameof(ChangeRoundNumber))]
     public float roundNumber;
 
-    public event Action<string> UpdateRoundTimerEvent, UpdateRoundNumberEvent;
+    public event Action<string> UpdateRoundTimerEvent, UpdateRoundNumberEvent, UpdateWinningTeamEvent;
 
     public Action NextAction;
     private void Start()
@@ -86,6 +86,12 @@ public class GameManager : NetworkBehaviour
     {
         roundNumber = newVal;
         UpdateRoundNumberEvent?.Invoke(roundNumber.ToString());
+    }
+
+    [Client]
+    private void UpdateWinnersText(string newVal)
+    {
+        UpdateWinningTeamEvent?.Invoke(newVal);
     }
 
     [Server]
@@ -187,6 +193,13 @@ public class GameManager : NetworkBehaviour
     }
 
     [Server]
+    public void CheckWinCondition()
+    {
+        if (hiders.Count == 0)
+            roundTimer = 0;
+    }
+
+    [Server]
     public void UpdateStartRound()
     {
         Debug.Log("Starting Round...");
@@ -220,7 +233,7 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Updating Round Progress...");
         SeekersReleased?.Invoke();
 
-        float roundLength = 600f;
+        float roundLength = 6f;
         roundTimer = roundLength;
 
         // Invoke RoundEnd
@@ -231,13 +244,15 @@ public class GameManager : NetworkBehaviour
     public void UpdateEndRound()
     {
         Debug.Log("Ending Round...");
-        if(roundTimer <= 0) 
+        if (hiders.Count == 0)
         {
-            // Hiders Win
+            // Seekers Win
+            UpdateWinnersText("Seekers Win!");
         }
         else
         {
-            // Seekers Win
+            // Hiders Win
+            UpdateWinnersText("Hiders Win!");
         }
 
         // Count down win screen timer... (maybe 5-10seconds)
@@ -253,6 +268,7 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("Round Intermission...");
         roundLive = false;
+        UpdateWinnersText(null);
         // Start countdown to next round start
         float roundLength = 30f;
         roundTimer = roundLength;
