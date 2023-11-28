@@ -17,10 +17,10 @@ public class FP_NetworkManager : NetworkManager
     }
 
     [Server]
-    public override void OnStartServer()
+    public override void OnServerConnect(NetworkConnectionToClient conn)
     {
-        base.OnStartServer();
+        base.OnServerConnect(conn);
 
-        GameManager.Instance.StartRoundLogic();
+        GameManager.Instance.CheckRoundStartReqs();
     }
 }

@@ -33,10 +33,18 @@ public class GameManager : MonoBehaviour
     private Color hiderTeamColor = Color.blue;
     public Color GetHiderTeamColor => hiderTeamColor;
 
+    [SerializeField]
+    List<Player> spectators = new List<Player>();
+    private Color spectatorTeamColor = Color.white;
+    public Color GetSpectatorTeamColor => spectatorTeamColor;
+
     public event Action RoundStart, RoundEnd, RoundIntermission, RoundInProgress, SeekersReleased;
 
     [SerializeField]
-    float timeRemaining;
+    float timeRemaining = 0;
+
+    [SerializeField, Tooltip("Shows if the round is currently in progress")]
+    bool roundLive = false;
 
     private void Start()
     {
@@ -48,19 +56,10 @@ public class GameManager : MonoBehaviour
     }
 
     [Server]
-    public void StartRoundLogic()
+    public void CheckRoundStartReqs()
     {
-        StartCoroutine(RoundLogic());
-    }
-
-    IEnumerator RoundLogic()
-    {
-        while(players.Count < 2)
-        {
-            yield return new WaitForSeconds(1.0f);
-        }
-
-        RoundStart?.Invoke();
+        if (seekers.Count + hiders.Count >= 2)
+            RoundStart?.Invoke();
     }
 
     [Server]
@@ -69,26 +68,36 @@ public class GameManager : MonoBehaviour
         Debug.Log("Adding " + newPlayer.name + " to Player List");
         players.Add(newPlayer);
 
-        if(players.Count == 1) // First player connected is a seeker
+        if (roundLive)
         {
-            seekers.Add(newPlayer);
-            newPlayer.UpdateTeam(Team.Seeker);
-            newPlayer.UpdateColour(seekerTeamColor);
-        }
-        else if (players.Count / (5 * seekers.Count) > 1.2f) // If there aren't enough hiders to seekers (1 seeker for every 5 hiders)
-        {
-            // Add newly connected player to seekers;
-            seekers.Add(newPlayer);
-            newPlayer.UpdateTeam(Team.Seeker);
-            newPlayer.UpdateColour(seekerTeamColor);
+            spectators.Add(newPlayer);
+            newPlayer.UpdateTeam(Team.Spectator);
+            newPlayer.UpdateColour(spectatorTeamColor);
         }
         else
         {
-            // Add new player to hiders.
-            hiders.Add(newPlayer);
-            newPlayer.UpdateTeam(Team.Hider);
-            newPlayer.UpdateColour(hiderTeamColor);
+            if(players.Count == 1) // First player connected is a seeker
+            {
+                seekers.Add(newPlayer);
+                newPlayer.UpdateTeam(Team.Seeker);
+                newPlayer.UpdateColour(seekerTeamColor);
+            }
+            else if (players.Count / (5 * seekers.Count) > 1.2f) // If there aren't enough hiders to seekers (1 seeker for every 5 hiders)
+            {
+                // Add newly connected player to seekers;
+                seekers.Add(newPlayer);
+                newPlayer.UpdateTeam(Team.Seeker);
+                newPlayer.UpdateColour(seekerTeamColor);
+            }
+            else
+            {
+                // Add new player to hiders.
+                hiders.Add(newPlayer);
+                newPlayer.UpdateTeam(Team.Hider);
+                newPlayer.UpdateColour(hiderTeamColor);
+            }
         }
+
     }
 
     [Server]
@@ -134,6 +143,7 @@ public class GameManager : MonoBehaviour
     [Server]
     public void UpdateStartRound()
     {
+        roundLive = true;
         // Move Players to round start locations based on team
         foreach(Player seeker in seekers)
         {
@@ -213,6 +223,7 @@ public class GameManager : MonoBehaviour
     [Server]
     public void UpdateRoundIntermission()
     {
+        roundLive = false;
         // Start countdown to next round start
         float roundLength = 2f;
         timeRemaining = roundLength * 60;
