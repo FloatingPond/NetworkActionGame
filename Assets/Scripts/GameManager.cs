@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     public void CheckRoundStartReqs()
     {
         Debug.Log("Checking there are enough players to start a round...");
+        Debug.Log("Seeker Count: " + seekers.Count + " Hider Count: " + hiders.Count);
         if (seekers.Count + hiders.Count >= 2)
             RoundStart?.Invoke();
     }
