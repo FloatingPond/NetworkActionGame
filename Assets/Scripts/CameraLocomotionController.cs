@@ -7,6 +7,12 @@ public class CameraLocomotionController : NetworkBehaviour
     [SerializeField]
     bool freeLook = false;
 
+    [SerializeField]
+    GameObject CameraPitch;
+
+    [SerializeField]
+    GameObject CameraYaw;
+
     [Client]
     private void OnEnable()
     {
@@ -39,13 +45,32 @@ public class CameraLocomotionController : NetworkBehaviour
         }
     }
 
+    public float newAngle;
+    public float newRotation;
+    public float currentRotation;
     [Client]
     private void OnLook(Vector2 lookVect)
     {
-        Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, -lookVect.y * 20 * Time.fixedDeltaTime);
+        newAngle = -lookVect.y * 20 * Time.fixedDeltaTime;
+        CameraPitch.transform.Rotate(newAngle, 0, 0);
+        newRotation = currentRotation + newAngle;
+        SetCurrentRotation(newRotation);
 
-        if (freeLook)
-            RotateCamera(lookVect);
+        RotateCamera(lookVect);
+    }
+
+    [Client]
+    private void SetCurrentRotation(float rot)
+    {
+        currentRotation = Mathf.Clamp(rot, -45f, 45f);
+        CameraPitch.transform.localRotation = Quaternion.Euler(rot, 0, 0);
+    }
+
+    [Client]
+    private void RotateCamera(Vector2 lookVect)
+    {
+        if (freeLook)      
+            CameraYaw.transform.Rotate(new Vector3(0, lookVect.x, 0) * 20 * Time.fixedDeltaTime);
         else
         {
             RequestPlayerRotation(lookVect);
@@ -53,16 +78,13 @@ public class CameraLocomotionController : NetworkBehaviour
     }
 
     [Client]
-    private void RotateCamera(Vector2 lookVect)
-    {
-        Camera.main.transform.RotateAround(transform.position, Vector3.up, lookVect.x * 20 * Time.fixedDeltaTime);
-    }
-
-    [Client]
     private void ResetCamera()
     {
-        Camera.main.transform.localRotation = Quaternion.identity;
-        Camera.main.transform.localPosition = new Vector3(0, 1, -5);
+        CameraPitch.transform.localRotation = Quaternion.identity;
+        CameraYaw.transform.localRotation = Quaternion.identity;
+        newAngle = 0;
+        newRotation = 0;
+        currentRotation = 0;
     }
 
     [Command]
@@ -103,7 +125,8 @@ public class CameraLocomotionController : NetworkBehaviour
                 PlayerInputs.Instance.FreeLook += FreeLook;
             }
 
-            Camera.main.transform.SetParent(gameObject.transform);
+            Camera.main.transform.SetParent(CameraPitch.transform);
+            Camera.main.transform.localPosition = new Vector3(0, 1, -5);
             ResetCamera();
         }
     }
