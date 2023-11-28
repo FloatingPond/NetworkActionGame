@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     List<Player> hiders = new List<Player>();
-    public Color hiderTeamColor = Color.blue;
+    private Color hiderTeamColor = Color.blue;
     public Color GetHiderTeamColor => hiderTeamColor;
 
     [Server]
