@@ -15,5 +15,12 @@ public class FP_NetworkManager : NetworkManager
         }
         base.OnServerDisconnect(conn);
     }
-    
+
+    [Server]
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        GameManager.Instance.StartRoundLogic();
+    }
 }

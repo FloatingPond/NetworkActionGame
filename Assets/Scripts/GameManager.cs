@@ -45,8 +45,6 @@ public class GameManager : MonoBehaviour
         RoundInProgress += UpdateRoundProgress;
         RoundIntermission += UpdateRoundIntermission;
         SeekersReleased += UpdateSeekersRelease;
-
-        StartRoundLogic();
     }
 
     [Server]
