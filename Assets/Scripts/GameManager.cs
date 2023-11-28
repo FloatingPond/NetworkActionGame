@@ -19,7 +19,7 @@ public class GameManager : NetworkBehaviour
     }
     #endregion
 
-    [SerializeField] GameObject SeekerSpawnBox;
+    [SerializeField] GameObject seekerSpawnBox, seekerDoor;
 
     [SerializeField]
     List<Player> players = new List<Player>();
@@ -41,10 +41,10 @@ public class GameManager : NetworkBehaviour
 
     public event Action RoundStart, RoundEnd, RoundIntermission, RoundInProgress, SeekersReleased;
 
-    [SerializeField, Tooltip("Shows if the round is currently in progress")]
+    [SerializeField, Tooltip("Shows if the round is currently in progress.")]
     bool roundLive = false;
 
-    [SyncVar(hook = nameof(ChangeRoundTimer))]
+    [SyncVar(hook = nameof(ChangeRoundTimer)), Tooltip("The time remaining in the current phase of the game.")]
     public float roundTimer;
 
     [SyncVar(hook = nameof(ChangeRoundNumber))]
@@ -53,8 +53,6 @@ public class GameManager : NetworkBehaviour
     public event Action<string> UpdateRoundTimerEvent, UpdateRoundNumberEvent;
 
     public Action NextAction;
-
-    [SerializeField] private GameObject seekerDoor;
     private void Start()
     {
         RoundStart += UpdateStartRound;
@@ -196,7 +194,7 @@ public class GameManager : NetworkBehaviour
         // Move Players to round start locations based on team
         foreach (Player seeker in seekers)
         {
-            seeker.transform.position = SeekerSpawnBox.transform.position;
+            seeker.transform.position = seekerSpawnBox.transform.position;
         }
 
         float roundLength = 10f;
