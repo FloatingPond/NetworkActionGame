@@ -109,7 +109,7 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("Checking there are enough players to start a round...");
         Debug.Log("Seeker Count: " + seekers.Count + " Hider Count: " + hiders.Count);
-        //if (seekers.Count + hiders.Count >= 2)
+        if (seekers.Count + hiders.Count >= 2)
             RoundStart?.Invoke();
     }
 
@@ -272,8 +272,8 @@ public class GameManager : NetworkBehaviour
         // Start countdown to next round start
         float roundLength = 30f;
         roundTimer = roundLength;
-
-        //RoundStart?.Invoke();
+        if (seekers.Count + hiders.Count >= 2)
+            NextAction = RoundStart;
 
     }
 }
