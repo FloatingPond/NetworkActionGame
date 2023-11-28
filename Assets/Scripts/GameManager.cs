@@ -51,6 +51,10 @@ public class GameManager : NetworkBehaviour
     public float roundNumber;
 
     public event Action<string> UpdateRoundTimerEvent, UpdateRoundNumberEvent;
+
+    public Action NextAction;
+
+    [SerializeField] private GameObject seekerDoor;
     private void Start()
     {
         RoundStart += UpdateStartRound;
@@ -65,7 +69,12 @@ public class GameManager : NetworkBehaviour
         {
             roundTimer -= Time.deltaTime;
         }
+        else
+        {
+            NextAction?.Invoke();
+        }
     }
+
     [Client]
     private void ChangeRoundTimer(float _, float newTime) 
     {
@@ -193,7 +202,7 @@ public class GameManager : NetworkBehaviour
         float roundLength = 10f;
         roundTimer = roundLength;
 
-        RoundInProgress?.Invoke();
+        NextAction = RoundInProgress;
         // Invoke RoundInProgress and SeekersReleased once timer has finished
     }
 
@@ -203,6 +212,7 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Seekers will be released shortly!");
         // Count down 20 seconds to seeker release
         float seekerReleaseTimer = 20f;
+        seekerDoor.transform.position -= new Vector3 (0,5,0);
         // Open Seeker Door here
     }
 
@@ -216,7 +226,7 @@ public class GameManager : NetworkBehaviour
         roundTimer = roundLength;
 
         // Invoke RoundEnd
-        RoundEnd?.Invoke();
+        NextAction = RoundEnd;
     }
 
     [Server]
@@ -236,7 +246,7 @@ public class GameManager : NetworkBehaviour
         float roundLength = 10f;
         roundTimer = roundLength;
 
-        RoundIntermission?.Invoke();
+        NextAction = RoundIntermission;
         // Invoke RoundIntermission
     }
 
