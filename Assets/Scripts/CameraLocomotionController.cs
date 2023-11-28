@@ -12,22 +12,22 @@ public class CameraLocomotionController : NetworkBehaviour
     [SerializeField]
     GameObject CameraYaw;
 
-    [Client]
-    private void OnEnable()
-    {
-        if (isLocalPlayer && PlayerInputs.Instance != null)
-        {
-            PlayerInputs.Instance.OnLook += OnLook;
-            PlayerInputs.Instance.FreeLook += FreeLook;
-        }
-    }
+    //[Client]
+    //private void OnEnable()
+    //{
+    //    if (isLocalPlayer && PlayerInputs.Instance != null)
+    //    {
+    //        PlayerInputs.Instance.OnLook += OnLook;
+    //        PlayerInputs.Instance.FreeLook += FreeLook;
+    //    }
+    //}
 
-    [Client]
-    private void OnDisable()
-    {
-        PlayerInputs.Instance.OnLook -= OnLook;
-        PlayerInputs.Instance.FreeLook -= FreeLook;
-    }
+    //[Client]
+    //private void OnDisable()
+    //{
+    //    PlayerInputs.Instance.OnLook -= OnLook;
+    //    PlayerInputs.Instance.FreeLook -= FreeLook;
+    //}
 
     [Client]
     private void FreeLook(float obj)
@@ -98,35 +98,31 @@ public class CameraLocomotionController : NetworkBehaviour
         transform.Rotate(new Vector3(0, newRotation.x, 0) * 20 * Time.fixedDeltaTime);
     }
 
-    public override void OnStopClient()
+    public override void OnStopLocalPlayer()
     {
-        if (isLocalPlayer)
-        {
-            PlayerInputs.Instance.OnLook -= OnLook;
-            PlayerInputs.Instance.FreeLook -= FreeLook;
+        PlayerInputs.Instance.OnLook -= OnLook;
+        PlayerInputs.Instance.FreeLook -= FreeLook;
 
-            Camera.main.transform.SetParent(null);
-            ResetCamera();
-        }
+        Camera.main.transform.SetParent(null);
+        Camera.main.transform.localPosition = new Vector3(0, 1, -5);
+        Camera.main.transform.localRotation = Quaternion.identity;
 
-        base.OnStopClient();
+        base.OnStopLocalPlayer();
     }
 
-    public override void OnStartClient()
+    public override void OnStartLocalPlayer()
     {
-        base.OnStartClient();
+        base.OnStartLocalPlayer();
 
-        if (isLocalPlayer)
+        if (PlayerInputs.Instance != null)
         {
-            if (PlayerInputs.Instance != null)
-            {
-                PlayerInputs.Instance.OnLook += OnLook;
-                PlayerInputs.Instance.FreeLook += FreeLook;
-            }
-
-            Camera.main.transform.SetParent(CameraPitch.transform);
-            Camera.main.transform.localPosition = new Vector3(0, 1, -5);
-            ResetCamera();
+            PlayerInputs.Instance.OnLook += OnLook;
+            PlayerInputs.Instance.FreeLook += FreeLook;
         }
+
+        Camera.main.transform.SetParent(CameraPitch.transform);
+        Camera.main.transform.localPosition = new Vector3(0, 1, -5);
+        Camera.main.transform.localRotation = Quaternion.identity;
+        ResetCamera();
     }
 }
