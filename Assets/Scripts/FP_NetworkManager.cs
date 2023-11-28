@@ -1,4 +1,5 @@
 using Mirror;
+using System.Diagnostics;
 
 public class FP_NetworkManager : NetworkManager
 {
@@ -11,7 +12,7 @@ public class FP_NetworkManager : NetworkManager
             {
                 GameManager.Instance.RemovePlayerFromAllLists(player);
             }
-            UnityEngine.Debug.Log("Player Disconnected: " + conn.address);
+            UnityEngine.Debug.Log("Player disconnected: " + conn.address);
         }
         base.OnServerDisconnect(conn);
     }
@@ -20,7 +21,7 @@ public class FP_NetworkManager : NetworkManager
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
         base.OnServerConnect(conn);
-
+        UnityEngine.Debug.Log("Player " + conn.address + " connected.");
         GameManager.Instance.CheckRoundStartReqs();
     }
 }

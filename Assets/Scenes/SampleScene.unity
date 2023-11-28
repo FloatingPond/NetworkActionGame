@@ -2030,11 +2030,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e22b162857ade4c859eb8872168827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SeekerSpawnBox: {fileID: 0}
+  SeekerSpawnBox: {fileID: 1253666771}
   players: []
   seekers: []
   hiders: []
+  spectators: []
   timeRemaining: 0
+  roundLive: 0
 --- !u!1 &507033626
 GameObject:
   m_ObjectHideFlags: 0

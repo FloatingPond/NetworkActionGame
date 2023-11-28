@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
     [Server]
     public void CheckRoundStartReqs()
     {
+        Debug.Log("Checking there are enough players to start a round...");
         if (seekers.Count + hiders.Count >= 2)
             RoundStart?.Invoke();
     }
@@ -143,20 +144,21 @@ public class GameManager : MonoBehaviour
     [Server]
     public void UpdateStartRound()
     {
+        Debug.Log("Starting Round...");
         roundLive = true;
         // Move Players to round start locations based on team
-        foreach(Player seeker in seekers)
+        foreach (Player seeker in seekers)
         {
             seeker.transform.position = SeekerSpawnBox.transform.position;
         }
 
         float roundLength = 10f;
         timeRemaining = roundLength;
-        while (timeRemaining > 0)
-        {
-            // Update UI with time remaining
-            timeRemaining -= Time.deltaTime;
-        }
+        //while (timeRemaining > 0)
+        //{
+        //    // Update UI with time remaining
+        //    timeRemaining -= Time.deltaTime;
+        //}
 
         RoundInProgress?.Invoke();
         // Invoke RoundInProgress and SeekersReleased once timer has finished
@@ -165,13 +167,14 @@ public class GameManager : MonoBehaviour
     [Server]
     public void UpdateSeekersRelease()
     {
+        Debug.Log("Seekers will be released shortly!");
         // Count down 20 seconds to seeker release
         float seekerReleaseTimer = 20f;
-        while (seekerReleaseTimer > 0)
-        {
-            // Update UI with time remaining
-            seekerReleaseTimer -= Time.deltaTime;
-        }
+        //while (seekerReleaseTimer > 0)
+        //{
+        //    // Update UI with time remaining
+        //    seekerReleaseTimer -= Time.deltaTime;
+        //}
 
         // Open Seeker Door here
     }
@@ -179,17 +182,18 @@ public class GameManager : MonoBehaviour
     [Server]
     public void UpdateRoundProgress()
     {
+        Debug.Log("Updating Round Progress...");
         SeekersReleased?.Invoke();
 
         float roundLength = 10f;
         timeRemaining = roundLength * 60;
-        while (timeRemaining > 0)
-        {
-            // Update UI with time remaining
-            timeRemaining -= Time.deltaTime;
+        //while (timeRemaining > 0)
+        //{
+        //    // Update UI with time remaining
+        //    timeRemaining -= Time.deltaTime;
 
-            if (hiders.Count == 0) break;
-        }
+        //    if (hiders.Count == 0) break;
+        //}
 
         // Invoke RoundEnd
         RoundEnd?.Invoke();
@@ -198,6 +202,7 @@ public class GameManager : MonoBehaviour
     [Server]
     public void UpdateEndRound()
     {
+        Debug.Log("Ending Round...");
         if(timeRemaining <= 0) 
         {
             // Hiders Win
@@ -210,11 +215,11 @@ public class GameManager : MonoBehaviour
         // Count down win screen timer... (maybe 5-10seconds)
         float roundLength = 10f;
         timeRemaining = roundLength;
-        while (timeRemaining > 0)
-        {
-            // Update UI with time remaining
-            timeRemaining -= Time.deltaTime;
-        }
+        //while (timeRemaining > 0)
+        //{
+        //    // Update UI with time remaining
+        //    timeRemaining -= Time.deltaTime;
+        //}
 
         RoundIntermission?.Invoke();
         // Invoke RoundIntermission
@@ -223,15 +228,16 @@ public class GameManager : MonoBehaviour
     [Server]
     public void UpdateRoundIntermission()
     {
+        Debug.Log("Round Intermission...");
         roundLive = false;
         // Start countdown to next round start
         float roundLength = 2f;
         timeRemaining = roundLength * 60;
-        while (timeRemaining > 0)
-        {
-            // Update UI with time remaining
-            timeRemaining -= Time.deltaTime;
-        }
+        //while (timeRemaining > 0)
+        //{
+        //    // Update UI with time remaining
+        //    timeRemaining -= Time.deltaTime;
+        //}
 
         RoundStart?.Invoke();
 
