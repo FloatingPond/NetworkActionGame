@@ -1,6 +1,5 @@
 using Mirror;
-using System.Diagnostics;
-using UnityEngine;
+
 public class FP_NetworkManager : NetworkManager
 {
     [Server]

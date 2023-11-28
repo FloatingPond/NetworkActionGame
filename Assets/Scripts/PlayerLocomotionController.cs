@@ -18,21 +18,6 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     #region Client-Side Code
 
-    //[Client]
-    //private void OnEnable()
-    //{
-    //    if (isLocalPlayer && PlayerInputs.Instance != null)
-    //    {
-    //        PlayerInputs.Instance.OnMove += OnMove;
-    //    }
-    //}
-
-    //[Client]
-    //private void OnDisable()
-    //{
-    //    PlayerInputs.Instance.OnMove -= OnMove;
-    //}    
-
     [Client]
     private void OnMove(Vector2 newVal)
     {

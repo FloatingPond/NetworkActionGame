@@ -1,4 +1,6 @@
 using Mirror;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +18,8 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    [SerializeField] GameObject SeekerSpawnBox;
+
     [SerializeField]
     List<Player> players = new List<Player>();
 
@@ -28,6 +32,38 @@ public class GameManager : MonoBehaviour
     List<Player> hiders = new List<Player>();
     private Color hiderTeamColor = Color.blue;
     public Color GetHiderTeamColor => hiderTeamColor;
+
+    public event Action RoundStart, RoundEnd, RoundIntermission, RoundInProgress, SeekersReleased;
+
+    [SerializeField]
+    float timeRemaining;
+
+    private void Start()
+    {
+        RoundStart += UpdateStartRound;
+        RoundEnd += UpdateEndRound;
+        RoundInProgress += UpdateRoundProgress;
+        RoundIntermission += UpdateRoundIntermission;
+        SeekersReleased += UpdateSeekersRelease;
+
+        StartRoundLogic();
+    }
+
+    [Server]
+    public void StartRoundLogic()
+    {
+        StartCoroutine(RoundLogic());
+    }
+
+    IEnumerator RoundLogic()
+    {
+        while(players.Count < 2)
+        {
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        RoundStart?.Invoke();
+    }
 
     [Server]
     public void AddPlayerToList(Player newPlayer)
@@ -95,5 +131,100 @@ public class GameManager : MonoBehaviour
                 seekers.Add(currentPlayer);
                 break;
         }
+    }
+
+    [Server]
+    public void UpdateStartRound()
+    {
+        // Move Players to round start locations based on team
+        foreach(Player seeker in seekers)
+        {
+            seeker.transform.position = SeekerSpawnBox.transform.position;
+        }
+
+        float roundLength = 10f;
+        timeRemaining = roundLength;
+        while (timeRemaining > 0)
+        {
+            // Update UI with time remaining
+            timeRemaining -= Time.deltaTime;
+        }
+
+        RoundInProgress?.Invoke();
+        // Invoke RoundInProgress and SeekersReleased once timer has finished
+    }
+
+    [Server]
+    public void UpdateSeekersRelease()
+    {
+        // Count down 20 seconds to seeker release
+        float seekerReleaseTimer = 20f;
+        while (seekerReleaseTimer > 0)
+        {
+            // Update UI with time remaining
+            seekerReleaseTimer -= Time.deltaTime;
+        }
+
+        // Open Seeker Door here
+    }
+
+    [Server]
+    public void UpdateRoundProgress()
+    {
+        SeekersReleased?.Invoke();
+
+        float roundLength = 10f;
+        timeRemaining = roundLength * 60;
+        while (timeRemaining > 0)
+        {
+            // Update UI with time remaining
+            timeRemaining -= Time.deltaTime;
+
+            if (hiders.Count == 0) break;
+        }
+
+        // Invoke RoundEnd
+        RoundEnd?.Invoke();
+    }
+
+    [Server]
+    public void UpdateEndRound()
+    {
+        if(timeRemaining <= 0) 
+        {
+            // Hiders Win
+        }
+        else
+        {
+            // Seekers Win
+        }
+
+        // Count down win screen timer... (maybe 5-10seconds)
+        float roundLength = 10f;
+        timeRemaining = roundLength;
+        while (timeRemaining > 0)
+        {
+            // Update UI with time remaining
+            timeRemaining -= Time.deltaTime;
+        }
+
+        RoundIntermission?.Invoke();
+        // Invoke RoundIntermission
+    }
+
+    [Server]
+    public void UpdateRoundIntermission()
+    {
+        // Start countdown to next round start
+        float roundLength = 2f;
+        timeRemaining = roundLength * 60;
+        while (timeRemaining > 0)
+        {
+            // Update UI with time remaining
+            timeRemaining -= Time.deltaTime;
+        }
+
+        RoundStart?.Invoke();
+
     }
 }

@@ -12,23 +12,6 @@ public class CameraLocomotionController : NetworkBehaviour
     [SerializeField]
     GameObject CameraYaw;
 
-    //[Client]
-    //private void OnEnable()
-    //{
-    //    if (isLocalPlayer && PlayerInputs.Instance != null)
-    //    {
-    //        PlayerInputs.Instance.OnLook += OnLook;
-    //        PlayerInputs.Instance.FreeLook += FreeLook;
-    //    }
-    //}
-
-    //[Client]
-    //private void OnDisable()
-    //{
-    //    PlayerInputs.Instance.OnLook -= OnLook;
-    //    PlayerInputs.Instance.FreeLook -= FreeLook;
-    //}
-
     [Client]
     private void FreeLook(float obj)
     {
