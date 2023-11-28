@@ -7,7 +7,10 @@ public class FP_NetworkManager : NetworkManager
     {
         for (int i = 0; i < conn.owned.Count; i++)
         {
-            conn.identity.GetComponent<Player>().RequestRemovalFromList();
+            if (conn.identity.TryGetComponent<Player>(out Player player))
+            {
+                player.RequestRemovalFromList();
+            }
             UnityEngine.Debug.Log("Player Disconnected: " + conn.address);
         }
         base.OnServerDisconnect(conn);
