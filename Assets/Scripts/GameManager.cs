@@ -88,8 +88,8 @@ public class GameManager : NetworkBehaviour
         UpdateRoundNumberEvent?.Invoke(roundNumber.ToString());
     }
 
-    [Client]
-    private void UpdateWinnersText(string newVal)
+    [ClientRpc]
+    private void UpdateWinnersTextRPC(string newVal)
     {
         UpdateWinningTeamEvent?.Invoke(newVal);
     }
@@ -247,12 +247,12 @@ public class GameManager : NetworkBehaviour
         if (hiders.Count == 0)
         {
             // Seekers Win
-            UpdateWinnersText("Seekers Win!");
+            UpdateWinnersTextRPC("Seekers Win!");
         }
         else
         {
             // Hiders Win
-            UpdateWinnersText("Hiders Win!");
+            UpdateWinnersTextRPC("Hiders Win!");
         }
 
         // Count down win screen timer... (maybe 5-10seconds)
@@ -268,7 +268,7 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("Round Intermission...");
         roundLive = false;
-        UpdateWinnersText(null);
+        UpdateWinnersTextRPC(null);
         // Start countdown to next round start
         float roundLength = 30f;
         roundTimer = roundLength;
