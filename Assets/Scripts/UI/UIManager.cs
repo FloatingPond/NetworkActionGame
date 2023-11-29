@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManager : NetworkBehaviour
 {
     public static UIManager Instance;
     [SerializeField] private TextMeshProUGUI roundTimerText;
@@ -31,8 +31,8 @@ public class UIManager : MonoBehaviour
         winningTeamPanel.SetActive(false);
     }
 
-    [Client]
-    public void UpdateTeamText(string newVal, int teamVal)
+    [TargetRpc]
+    public void UpdateTeamTextRPC(NetworkConnectionToClient target, string newVal, int teamVal)
     {
         PlayerTeamText.text = newVal;
         switch(teamVal)
