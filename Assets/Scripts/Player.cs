@@ -80,7 +80,6 @@ public class Player : NetworkBehaviour
             renderer.material.color = newColor;
         }
         teamColor = newColor;
-
     }
 
     [Server]

@@ -9,7 +9,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     #region Client-Server Code (Commands)
 
     [Command]
-    private void OnMove(Vector2 newVal)
+    private void RequestOnMove(Vector2 newVal)
     {
         UpdatePlayerMovement(newVal);
     }
@@ -48,7 +48,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
         if (PlayerInputs.Instance != null)
         {
-            PlayerInputs.Instance.OnMove += OnMove;
+            PlayerInputs.Instance.OnMove += RequestOnMove;
         }
 
         transform.position = GameObject.Find("TestSpawnPoint").transform.position;
@@ -56,7 +56,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     public override void OnStopLocalPlayer()
     {
-        PlayerInputs.Instance.OnMove -= OnMove;
+        PlayerInputs.Instance.OnMove -= RequestOnMove;
 
         base.OnStopLocalPlayer();
     }

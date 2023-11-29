@@ -681,6 +681,7 @@ MonoBehaviour:
   syncInterval: 0
   rb: {fileID: 3384257088644722626}
   movementSpeed: 7
+  moveDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &1164118825854026113
 GameObject:
   m_ObjectHideFlags: 0
