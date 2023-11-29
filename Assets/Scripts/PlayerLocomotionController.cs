@@ -3,26 +3,20 @@ using UnityEngine;
 
 public class PlayerLocomotionController : NetworkBehaviour
 {
-    [SerializeField] private CharacterController _CharacterController;
-
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private float movementSpeed = 7f;
+    [SerializeField] private Vector3 moveDirection;
     #region Client-Server Code (Commands)
 
     [Command]
-    private void RequestMovement(Vector2 newVal)
+    private void RequestOnMove(Vector2 newVal)
     {
-        //SendMessageRPC(netIdentity + ": " + newVal);
         UpdatePlayerMovement(newVal);
     }
 
     #endregion
 
     #region Client-Side Code
-
-    [Client]
-    private void OnMove(Vector2 newVal)
-    {
-        RequestMovement(newVal);
-    }
 
     #endregion
 
@@ -31,21 +25,13 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Server]
     private void UpdatePlayerMovement(Vector2 moveVect)
     {
-        float grav;
+        moveDirection = transform.forward * moveVect.y;
+        moveDirection += transform.right * moveVect.x;
+        moveDirection.Normalize();
+        moveDirection.y = 0;
+        moveDirection *= movementSpeed;
 
-        if(_CharacterController.isGrounded)
-        {
-            grav = 0;
-        }
-        else
-        {
-            grav = -9.81f * Time.fixedDeltaTime;
-        }
-
-        _CharacterController.Move((new Vector3(moveVect.y * transform.forward.x, grav, moveVect.y * transform.forward.z)
-                + new Vector3(moveVect.x * transform.right.x,
-                                _CharacterController.velocity.y * transform.forward.y,
-                                moveVect.x * transform.right.z)) * (10 * Time.fixedDeltaTime));
+        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
     }
 
     #endregion
@@ -62,7 +48,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
         if (PlayerInputs.Instance != null)
         {
-            PlayerInputs.Instance.OnMove += OnMove;
+            PlayerInputs.Instance.OnMove += RequestOnMove;
         }
 
         transform.position = GameObject.Find("TestSpawnPoint").transform.position;
@@ -70,7 +56,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     public override void OnStopLocalPlayer()
     {
-        PlayerInputs.Instance.OnMove -= OnMove;
+        PlayerInputs.Instance.OnMove -= RequestOnMove;
 
         base.OnStopLocalPlayer();
     }

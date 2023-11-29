@@ -53,7 +53,8 @@ public class Player : NetworkBehaviour
     [Client]
     private void ChangeColour(Color _, Color newCol)
     {
-        gameObject.GetComponent<Renderer>().material.color = teamColor;
+       if(gameObject.TryGetComponent(out Renderer renderer))
+            renderer.material.color = teamColor;
     }
 
     [Server]
@@ -74,7 +75,10 @@ public class Player : NetworkBehaviour
     [Server]
     public void UpdateColour(Color newColor)
     {
-        gameObject.GetComponent<Renderer>().material.color = newColor;
+        if(gameObject.TryGetComponent(out Renderer renderer))
+        {
+            renderer.material.color = newColor;
+        }
         teamColor = newColor;
     }
 
@@ -101,11 +105,11 @@ public class Player : NetworkBehaviour
         base.OnStopLocalPlayer();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
         if (!isLocalPlayer) return;
 
-        if (other.TryGetComponent(out Player enemy))
+        if (collision.collider.TryGetComponent(out Player enemy))
         {
             if (enemy.currentTeam == currentTeam) return; // The player we collided with was on our team.
 

@@ -47,13 +47,5 @@ public class PlayerInputs : MonoBehaviour
         }
 
         FreeLook?.Invoke(inputActions.Movement.FreeLook.ReadValue<float>());
-        //if (inputActions.Movement.FreeLook.IsPressed())
-        //{
-        //    freeLook?.Invoke(inputActions.Movement.FreeLook.ReadValue<float>());
-        //} 
-        //else if(inputActions.Movement.FreeLook.WasReleasedThisFrame())
-        //{
-        //    freeLook?.Invoke(inputActions.Movement.FreeLook.ReadValue<float>());
-        //}
     }
 }
