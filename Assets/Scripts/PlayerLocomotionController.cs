@@ -11,7 +11,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Command]
     private void RequestMovement(Vector2 newVal)
     {
-        UpdatePlayerMovement(newVal);
+        UpdatePlayerMovement(newVal, Camera.main.transform);
     }
 
     #endregion
@@ -29,10 +29,10 @@ public class PlayerLocomotionController : NetworkBehaviour
     #region Server-Side Code
 
     [Server]
-    private void UpdatePlayerMovement(Vector2 moveVect)
+    private void UpdatePlayerMovement(Vector2 moveVect, Transform camera)
     {
-        moveDirection = Camera.main.transform.forward * moveVect.y;
-        moveDirection += Camera.main.transform.right * moveVect.x;
+        moveDirection = camera.forward * moveVect.y;
+        moveDirection += camera.right * moveVect.x;
         moveDirection.Normalize();
         moveDirection.y = 0;
         moveDirection *= movementSpeed;
