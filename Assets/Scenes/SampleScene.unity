@@ -926,7 +926,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TheSilentShade
+  m_text: TestName
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1090,7 +1090,7 @@ GameObject:
   - component: {fileID: 282074779}
   - component: {fileID: 282074778}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: PlayerTeamText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1135,7 +1135,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Seeker
+  m_text: Donkey
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2212,6 +2212,8 @@ MonoBehaviour:
   roundTimerText: {fileID: 1196904438}
   roundNumberText: {fileID: 679054374}
   winningTeamText: {fileID: 1283015854}
+  PlayerTeamText: {fileID: 282074778}
+  PlayerNameText: {fileID: 232803588}
   winningTeamPanel: {fileID: 391987823}
 --- !u!1 &484506491
 GameObject:
@@ -5669,7 +5671,7 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 8991694895565084575, guid: 0ebdf448db408f042976560e2caa9758, type: 3}
+  playerPrefab: {fileID: 1106399205474093392, guid: 383ae7cd0476e5e429de2b00869df27b, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []

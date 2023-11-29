@@ -42,12 +42,16 @@ public class Player : NetworkBehaviour
     private void ChangeTeam(Team _, Team newTeam)
     {
         currentTeam = newTeam;
+        Debug.Log("Team has been changed.");
+        // Update Team UI
+        UIManager.Instance.UpdateTeamText(currentTeam.ToString(), (int)currentTeam);
     }
     
     [Client]
     private void ChangeName(string _, string newName)
     {
         name = playerName;
+        UIManager.Instance.UpdatePlayerName(newName, (int)currentTeam);
     }
 
     [Client]
@@ -125,5 +129,6 @@ public enum Team
 {
     Seeker,
     Hider,
-    Spectator
+    Spectator,
+    Null
 }

@@ -77,6 +77,7 @@ public class GameManager : NetworkBehaviour
     {
         roundLive = newBool;
     }
+
     [Client]
     private void ChangeRoundTimer(float _, float newTime) 
     {
@@ -103,11 +104,13 @@ public class GameManager : NetworkBehaviour
     {
         roundTimer = newTime;
     }
+
     [Server]
     public void UpdateRoundNumber(float newTime)
     {
         roundTimer = newTime;
     }
+
     [Server]
     public void CheckRoundStartReqs()
     {
@@ -273,11 +276,15 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Round Intermission...");
         roundLive = false;
         UpdateWinnersTextRPC(null);
+
+        if (seekers.Count + hiders.Count < 2) return;
+
+        // Sort Players into new teams!
+
         // Start countdown to next round start
         float roundLength = 30f;
         roundTimer = roundLength;
-        if (seekers.Count + hiders.Count >= 2)
-            NextAction = RoundStart;
+        NextAction = RoundStart;
 
     }
 }

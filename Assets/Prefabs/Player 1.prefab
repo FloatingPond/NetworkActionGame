@@ -660,7 +660,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  currentTeam: 0
+  currentTeam: 3
   playerName: 
 --- !u!114 &6416315025487387225
 MonoBehaviour:
@@ -714,6 +714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 6966362072174656617}
+  moveAmount: 0
 --- !u!1 &1164118825854026113
 GameObject:
   m_ObjectHideFlags: 0
