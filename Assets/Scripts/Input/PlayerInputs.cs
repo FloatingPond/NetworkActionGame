@@ -7,6 +7,8 @@ public class PlayerInputs : MonoBehaviour
     public event Action<float> FreeLook;
     public event Action StopMove;
 
+    public bool sprint = false;
+
     public PlayerInputActions inputActions;
     public static PlayerInputs Instance { get; private set; }
     private void Awake()
@@ -27,6 +29,8 @@ public class PlayerInputs : MonoBehaviour
         inputActions.Movement.Move.performed += ctx => OnMove?.Invoke(ctx.ReadValue<Vector2>());
         inputActions.Movement.Move.canceled += ctx => StopMove?.Invoke();
         inputActions.Movement.Look.performed += ctx => OnLook?.Invoke(ctx.ReadValue<Vector2>());
+        inputActions.Movement.Sprint.performed += ctx => sprint = true;
+        inputActions.Movement.Sprint.canceled += ctx => sprint = false;
         #endregion
 
     }

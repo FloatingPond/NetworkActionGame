@@ -5,7 +5,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] Animator animator;
     int horizontal;
     int vertical;
-    [SerializeField] float moveAmount;
+    public float moveAmount;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -26,16 +26,16 @@ public class PlayerAnimationController : MonoBehaviour
     private void StopMovement()
     {
         Debug.Log("Stop Movement");
-        UpdateAnimatorValues(0, 0);
+        UpdateAnimatorValues(0, 0, false);
     }
 
     private void RecieveInput(Vector2 newMovement)
     {
         moveAmount = Mathf.Clamp01(Mathf.Abs(newMovement.x) + Mathf.Abs(newMovement.y));
-        UpdateAnimatorValues(0, moveAmount);
+        UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
     }
 
-    public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement)
+    public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         float snappedHorizontal;
         float snappedVertical;
@@ -83,6 +83,12 @@ public class PlayerAnimationController : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
+
+        if (isSprinting) 
+        {
+            snappedHorizontal = horizontalMovement;
+            snappedVertical = 2;
+        }
         animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
         animator.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
     }
