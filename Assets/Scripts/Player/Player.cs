@@ -107,7 +107,7 @@ public class Player : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!isLocalPlayer) return;
+        if (!isLocalPlayer || !GameManager.Instance.roundLive) return;
 
         if (collision.collider.TryGetComponent(out Player enemy))
         {

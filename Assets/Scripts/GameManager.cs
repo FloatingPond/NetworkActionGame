@@ -41,8 +41,8 @@ public class GameManager : NetworkBehaviour
 
     public event Action RoundStart, RoundEnd, RoundIntermission, RoundInProgress, SeekersReleased;
 
-    [SerializeField, Tooltip("Shows if the round is currently in progress.")]
-    bool roundLive = false;
+    [SyncVar(hook = nameof(ChangeRoundStatus)), Tooltip("Shows if the round is currently in progress.")]
+    public bool roundLive = false;
 
     [SyncVar(hook = nameof(ChangeRoundTimer)), Tooltip("The time remaining in the current phase of the game.")]
     public float roundTimer;
@@ -72,7 +72,11 @@ public class GameManager : NetworkBehaviour
             NextAction?.Invoke();
         }
     }
-
+    [Client]
+    private void ChangeRoundStatus(bool _, bool newBool)
+    {
+        roundLive = newBool;
+    }
     [Client]
     private void ChangeRoundTimer(float _, float newTime) 
     {
