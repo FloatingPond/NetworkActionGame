@@ -31,7 +31,7 @@ public class PlayerLocomotionController : NetworkBehaviour
         moveDirection.y = 0;
         moveDirection *= movementSpeed;
 
-        rb.velocity = moveDirection;
+        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
     }
 
     #endregion
