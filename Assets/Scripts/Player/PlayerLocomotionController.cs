@@ -1,13 +1,18 @@
 using Mirror;
 using UnityEngine;
-
+[RequireComponent(typeof(PlayerAnimationController))]
 public class PlayerLocomotionController : NetworkBehaviour
 {
+    [SerializeField] private PlayerAnimationController playerAnimationController;
     [SerializeField] private Rigidbody rb;
-    [SerializeField] private float movementSpeed = 7f;
-    [SerializeField] private Vector3 moveDirection;
+    [SerializeField, Header("Movement Speeds")] private float walkSpeed = 1.5f, runSpeed = 7f, sprintSpeed = 12f;
+    [SerializeField] bool isSprinting = false;
+    private Vector3 moveDirection;
     #region Client-Server Code (Commands)
-
+    private void Update()
+    {
+        HandleSprinting();
+    }
     [Command]
     private void RequestOnMove(Vector2 newVal)
     {
@@ -17,6 +22,19 @@ public class PlayerLocomotionController : NetworkBehaviour
     #endregion
 
     #region Client-Side Code
+
+    [Client]
+    private void HandleSprinting()
+    {
+        if (PlayerInputs.Instance.sprint && playerAnimationController.moveAmount > 0.5f)
+        {
+            isSprinting = true;
+        }
+        else
+        {
+            isSprinting = false;
+        }
+    }
 
     #endregion
 
@@ -29,7 +47,22 @@ public class PlayerLocomotionController : NetworkBehaviour
         moveDirection += transform.right * moveVect.x;
         moveDirection.Normalize();
         moveDirection.y = 0;
-        moveDirection *= movementSpeed;
+
+        if (isSprinting)
+        {
+            moveDirection *= sprintSpeed;
+        }
+        else
+        {
+            if (playerAnimationController.moveAmount >= 0.5f)
+            {
+                moveDirection *= runSpeed;
+            }
+            else
+            {
+                moveDirection *= walkSpeed;
+            }
+        }
 
         rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
     }

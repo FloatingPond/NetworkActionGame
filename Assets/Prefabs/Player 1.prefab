@@ -698,8 +698,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerAnimationController: {fileID: 4894622387890163876}
   rb: {fileID: 3384257088644722626}
-  movementSpeed: 7
+  walkSpeed: 1.5
+  runSpeed: 7
+  sprintSpeed: 12
   moveDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &4894622387890163876
 MonoBehaviour:
