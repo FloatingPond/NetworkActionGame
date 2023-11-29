@@ -53,7 +53,8 @@ public class Player : NetworkBehaviour
     [Client]
     private void ChangeColour(Color _, Color newCol)
     {
-        gameObject.GetComponent<Renderer>().material.color = teamColor;
+       if(gameObject.TryGetComponent(out Renderer renderer))
+            renderer.material.color = teamColor;
     }
 
     [Server]
@@ -74,8 +75,12 @@ public class Player : NetworkBehaviour
     [Server]
     public void UpdateColour(Color newColor)
     {
-        gameObject.GetComponent<Renderer>().material.color = newColor;
+        if(gameObject.TryGetComponent(out Renderer renderer))
+        {
+            renderer.material.color = newColor;
+        }
         teamColor = newColor;
+
     }
 
     [Server]

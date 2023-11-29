@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class PlayerLocomotionController : NetworkBehaviour
 {
-    [SerializeField] private CharacterController _CharacterController;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private float movementSpeed = 7f;
 
     #region Client-Server Code (Commands)
 
     [Command]
     private void RequestMovement(Vector2 newVal)
     {
-        //SendMessageRPC(netIdentity + ": " + newVal);
         UpdatePlayerMovement(newVal);
     }
 
@@ -31,21 +31,13 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Server]
     private void UpdatePlayerMovement(Vector2 moveVect)
     {
-        float grav;
+        Vector3 moveDirection = Camera.main.transform.forward * moveVect.y;
+        moveDirection += Camera.main.transform.right * moveVect.x;
+        moveDirection.Normalize();
+        moveDirection.y = 0;
+        moveDirection *= movementSpeed;
 
-        if(_CharacterController.isGrounded)
-        {
-            grav = 0;
-        }
-        else
-        {
-            grav = -9.81f * Time.fixedDeltaTime;
-        }
-
-        _CharacterController.Move((new Vector3(moveVect.y * transform.forward.x, grav, moveVect.y * transform.forward.z)
-                + new Vector3(moveVect.x * transform.right.x,
-                                _CharacterController.velocity.y * transform.forward.y,
-                                moveVect.x * transform.right.z)) * (10 * Time.fixedDeltaTime));
+        rb.velocity = moveDirection;
     }
 
     #endregion
