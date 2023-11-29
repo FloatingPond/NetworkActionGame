@@ -106,11 +106,11 @@ public class Player : NetworkBehaviour
         base.OnStopLocalPlayer();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
         if (!isLocalPlayer) return;
 
-        if (other.TryGetComponent(out Player enemy))
+        if (collision.collider.TryGetComponent(out Player enemy))
         {
             if (enemy.currentTeam == currentTeam) return; // The player we collided with was on our team.
 
