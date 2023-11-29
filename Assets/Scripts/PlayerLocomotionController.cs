@@ -10,12 +10,19 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Command]
     private void RequestMovement(Vector2 newVal)
     {
+        //SendMessageRPC(netIdentity + ": " + newVal);
         UpdatePlayerMovement(newVal);
     }
 
     #endregion
 
     #region Client-Side Code
+
+    [Client]
+    private void OnMove(Vector2 newVal)
+    {
+        RequestMovement(newVal);
+    }
 
     #endregion
 
@@ -36,11 +43,18 @@ public class PlayerLocomotionController : NetworkBehaviour
         }
 
         _CharacterController.Move((new Vector3(moveVect.y * transform.forward.x, grav, moveVect.y * transform.forward.z)
-                                   + new Vector3(moveVect.x * transform.right.x, _CharacterController.velocity.y * transform.forward.y, moveVect.x * transform.right.z)) 
-                                   * (10 * Time.fixedDeltaTime));
+                + new Vector3(moveVect.x * transform.right.x,
+                                _CharacterController.velocity.y * transform.forward.y,
+                                moveVect.x * transform.right.z)) * (10 * Time.fixedDeltaTime));
     }
 
     #endregion
+
+    [ClientRpc]
+    private void SendMessageRPC(string newMessage)
+    {
+        Debug.Log(newMessage);
+    }
 
     public override void OnStartLocalPlayer()
     {
@@ -48,7 +62,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
         if (PlayerInputs.Instance != null)
         {
-            PlayerInputs.Instance.OnMove += RequestMovement;
+            PlayerInputs.Instance.OnMove += OnMove;
         }
 
         transform.position = GameObject.Find("TestSpawnPoint").transform.position;
@@ -56,7 +70,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     public override void OnStopLocalPlayer()
     {
-        PlayerInputs.Instance.OnMove -= RequestMovement;
+        PlayerInputs.Instance.OnMove -= OnMove;
 
         base.OnStopLocalPlayer();
     }
