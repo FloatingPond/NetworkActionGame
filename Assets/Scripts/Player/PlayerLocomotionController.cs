@@ -68,13 +68,6 @@ public class PlayerLocomotionController : NetworkBehaviour
     }
 
     #endregion
-
-    [ClientRpc]
-    private void SendMessageRPC(string newMessage)
-    {
-        Debug.Log(newMessage);
-    }
-
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
