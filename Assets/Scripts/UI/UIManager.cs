@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManager : NetworkBehaviour
 {
     public static UIManager Instance;
     [SerializeField] private TextMeshProUGUI roundTimerText;
@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     [Client]
     public void UpdateTeamText(string newVal, int teamVal)
     {
+        if (!isLocalPlayer) return;
         PlayerTeamText.text = newVal;
         switch(teamVal)
         {
@@ -54,6 +55,7 @@ public class UIManager : MonoBehaviour
     [Client]
     public void UpdatePlayerName(string newVal, int teamVal)
     {
+        if (!isLocalPlayer) return;
         PlayerNameText.text = newVal;
         switch(teamVal)
         {
