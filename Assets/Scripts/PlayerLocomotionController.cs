@@ -5,7 +5,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 {
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float movementSpeed = 7f;
-
+    [SerializeField] private Vector3 moveDirection;
     #region Client-Server Code (Commands)
 
     [Command]
@@ -31,7 +31,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Server]
     private void UpdatePlayerMovement(Vector2 moveVect)
     {
-        Vector3 moveDirection = Camera.main.transform.forward * moveVect.y;
+        moveDirection = Camera.main.transform.forward * moveVect.y;
         moveDirection += Camera.main.transform.right * moveVect.x;
         moveDirection.Normalize();
         moveDirection.y = 0;
