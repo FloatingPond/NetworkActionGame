@@ -1,42 +1,44 @@
 using Mirror;
 using UnityEngine;
 
-public class PlayerAnimationController : NetworkBehaviour
+public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] Animator animator;
     int horizontal;
     int vertical;
     public float moveAmount;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
     }
+
     private void OnEnable()
     {
-        if (!isLocalPlayer) return;
         PlayerInputs.Instance.OnMove += RecieveInput;
         PlayerInputs.Instance.StopMove += StopMovement;
     }
+
     private void OnDisable()
     {
         PlayerInputs.Instance.OnMove -= RecieveInput;
         PlayerInputs.Instance.StopMove -= StopMovement;
     }
-    [Command]
+
     private void StopMovement()
     {
         Debug.Log("Stop Movement");
         UpdateAnimatorValues(0, 0, false);
     }
-    [Client]
+
     private void RecieveInput(Vector2 newMovement)
     {
         moveAmount = Mathf.Clamp01(Mathf.Abs(newMovement.x) + Mathf.Abs(newMovement.y));
         UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
     }
-    [Command]
+
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         float snappedHorizontal;

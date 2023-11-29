@@ -9,10 +9,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     [SerializeField] bool isSprinting = false;
     private Vector3 moveDirection;
     #region Client-Server Code (Commands)
-    private void Update()
-    {
-        HandleSprinting();
-    }
+    
     [Command]
     private void RequestOnMove(Vector2 newVal)
     {
@@ -68,6 +65,12 @@ public class PlayerLocomotionController : NetworkBehaviour
     }
 
     #endregion
+
+    private void Update()
+    {
+        HandleSprinting();
+    }
+
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
