@@ -9,7 +9,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     #region Client-Server Code (Commands)
 
     [Command]
-    private void RequestMovement(Vector2 newVal)
+    private void OnMove(Vector2 newVal)
     {
         UpdatePlayerMovement(newVal, Camera.main.transform);
     }
@@ -17,12 +17,6 @@ public class PlayerLocomotionController : NetworkBehaviour
     #endregion
 
     #region Client-Side Code
-
-    [Client]
-    private void OnMove(Vector2 newVal)
-    {
-        RequestMovement(newVal);
-    }
 
     #endregion
 
