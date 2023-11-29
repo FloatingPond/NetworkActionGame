@@ -1,6 +1,7 @@
+using Mirror;
 using UnityEngine;
 
-public class PlayerAnimationController : MonoBehaviour
+public class PlayerAnimationController : NetworkBehaviour
 {
     [SerializeField] Animator animator;
     int horizontal;
@@ -14,6 +15,7 @@ public class PlayerAnimationController : MonoBehaviour
     }
     private void OnEnable()
     {
+        if (!isLocalPlayer) return;
         PlayerInputs.Instance.OnMove += RecieveInput;
         PlayerInputs.Instance.StopMove += StopMovement;
     }
@@ -22,19 +24,19 @@ public class PlayerAnimationController : MonoBehaviour
         PlayerInputs.Instance.OnMove -= RecieveInput;
         PlayerInputs.Instance.StopMove -= StopMovement;
     }
-
+    [Command]
     private void StopMovement()
     {
         Debug.Log("Stop Movement");
         UpdateAnimatorValues(0, 0, false);
     }
-
+    [Client]
     private void RecieveInput(Vector2 newMovement)
     {
         moveAmount = Mathf.Clamp01(Mathf.Abs(newMovement.x) + Mathf.Abs(newMovement.y));
         UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
     }
-
+    [Command]
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         float snappedHorizontal;
