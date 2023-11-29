@@ -1,5 +1,7 @@
+using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -26,25 +28,58 @@ public class UIManager : MonoBehaviour
         winningTeamPanel.SetActive(false);
     }
 
+    [Client]
     public void UpdateRoundTimerText(string newVal)
     {
         roundTimerText.text = newVal;
     }
 
+    [Client]
     public void UpdateRoundNumberText(string newVal)
     {
         roundNumberText.text = newVal;
     }
 
+    [Client]
     public void UpdateWinningTeamText(string newVal)
     {
         ToggleWinScreen();
         winningTeamText.text = newVal;
     }
 
+    [Client]
     public void ToggleWinScreen()
     {
         winningTeamPanel.SetActive(!winningTeamPanel.activeSelf);
+    }
+
+    [Client]
+    public void UpdateSprintBarColour(Slider sprintBar)
+    {
+        if(sprintBar.value > .66f)
+        {
+            // green
+            if(sprintBar.fillRect.TryGetComponent(out Image img))
+            {
+                img.color = Color.green;
+            }
+        }
+        else if (sprintBar.value > .33f)
+        {
+            // yellow
+            if (sprintBar.fillRect.TryGetComponent(out Image img))
+            {
+                img.color = Color.yellow;
+            }
+        }
+        else
+        {
+            // red
+            if (sprintBar.fillRect.TryGetComponent(out Image img))
+            {
+                img.color = Color.red;
+            }
+        }
     }
 
     public void ExitButton()
