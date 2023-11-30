@@ -6,6 +6,8 @@ public class PlayerLocomotionController : NetworkBehaviour
     [SerializeField] private PlayerAnimationController playerAnimationController;
     [SerializeField] private Rigidbody rb;
     [SerializeField, Header("Movement Speeds")] private float walkSpeed = 1.5f, runSpeed = 7f, sprintSpeed = 12f;
+
+    [SyncVar(hook = nameof(ChangeSprintInput))]
     [SerializeField] bool isSprinting = false;
     private Vector3 moveDirection;
 
@@ -16,25 +18,29 @@ public class PlayerLocomotionController : NetworkBehaviour
     #region Client-Side Code
 
     [Client]
+    private void ChangeSprintInput(bool _, bool newVal)
+    {
+        isSprinting = newVal;
+    }
+
+    [Server]
+    private void UpdateSprintInput(bool newVal)
+    {
+        isSprinting = newVal;
+    }
+
+    [Client]
     private void HandleSprinting()
     {
         //if (PlayerInputs.Instance.sprint && moveAmount > 0.5f)
         if (PlayerInputs.Instance.inputActions.Movement.Sprint.IsPressed() && moveAmount > 0.5f)
         {
             isSprinting = true;
-            UpdateSprint(true);
         }
         else
         {
             isSprinting = false;
-            UpdateSprint(false);
         }
-    }
-
-    [Command]
-    private void UpdateSprint(bool _)
-    {
-        PlayerInputs.Instance.sprint = _;
     }
 
     [Client]
@@ -53,7 +59,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     private void UpdatePlayerMovement(Vector2 moveVect)
     {
         moveAmount = Mathf.Clamp01(Mathf.Abs(moveVect.x) + Mathf.Abs(moveVect.y));
-        playerAnimationController.UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
+        playerAnimationController.UpdateAnimatorValues(0, moveAmount, isSprinting);
 
         moveDirection = transform.forward * moveVect.y;
         moveDirection += transform.right * moveVect.x;

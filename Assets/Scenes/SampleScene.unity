@@ -6254,7 +6254,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  sprint: 0
 --- !u!114 &1925710869
 MonoBehaviour:
   m_ObjectHideFlags: 0

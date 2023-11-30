@@ -8,9 +8,6 @@ public class PlayerInputs : NetworkBehaviour
     public event Action<float> FreeLook;
     public event Action StopMove;
 
-    [SyncVar(hook = nameof(ChangeSprintInput))]
-    public bool sprint = false;
-
     public PlayerInputActions inputActions;
     public static PlayerInputs Instance { get; private set; }
     private void Awake()
@@ -31,22 +28,8 @@ public class PlayerInputs : NetworkBehaviour
         inputActions.Movement.Move.performed += ctx => OnMove?.Invoke(ctx.ReadValue<Vector2>());
         inputActions.Movement.Move.canceled += ctx => StopMove?.Invoke();
         inputActions.Movement.Look.performed += ctx => OnLook?.Invoke(ctx.ReadValue<Vector2>());
-        // inputActions.Movement.Sprint.performed += ctx => sprint = true;
-        // inputActions.Movement.Sprint.canceled += ctx => sprint = false;
         #endregion
 
-    }
-
-    [Client]
-    private void ChangeSprintInput(bool _, bool newVal)
-    {
-        sprint = newVal;
-    }
-
-    [Server]
-    private void UpdateSprintInput(bool newVal)
-    {
-        sprint = newVal;
     }
 
     private void OnEnable()
