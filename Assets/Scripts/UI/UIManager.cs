@@ -31,8 +31,8 @@ public class UIManager : NetworkBehaviour
         winningTeamPanel.SetActive(false);
     }
 
-    [Client]
-    public void UpdateTeamText(string newVal, int teamVal)
+    [TargetRpc]
+    public void UpdateTeamTextRPC(NetworkConnectionToClient target, string newVal, int teamVal)
     {
         if (!isLocalPlayer) return;
         PlayerTeamText.text = newVal;
