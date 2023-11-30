@@ -23,7 +23,7 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Client]
     private void HandleSprinting()
     {
-        if (PlayerInputs.Instance.sprint && playerAnimationController.moveAmount > 0.5f)
+        if (PlayerInputs.Instance.sprint && moveAmount > 0.5f)
         {
             isSprinting = true;
         }
@@ -32,11 +32,20 @@ public class PlayerLocomotionController : NetworkBehaviour
             isSprinting = false;
         }
     }
+    public float moveAmount;
+    [Client]
+    public void ChangeAnimatorValues(Vector2 newVal)
+    {
+        moveAmount = Mathf.Clamp01(Mathf.Abs(newVal.x) + Mathf.Abs(newVal.y));
+        playerAnimationController.UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
+        RequestOnMove(newVal);
+    }
 
     #endregion
 
     #region Server-Side Code
 
+    public float currentMoveSpeed = 0;
     [Server]
     private void UpdatePlayerMovement(Vector2 moveVect)
     {
@@ -48,16 +57,19 @@ public class PlayerLocomotionController : NetworkBehaviour
         if (isSprinting)
         {
             moveDirection *= sprintSpeed;
+            currentMoveSpeed = sprintSpeed;
         }
         else
         {
-            if (playerAnimationController.moveAmount >= 0.5f)
+            if (moveAmount >= 0.5f)
             {
                 moveDirection *= runSpeed;
+                currentMoveSpeed = runSpeed;
             }
             else
             {
                 moveDirection *= walkSpeed;
+                currentMoveSpeed = walkSpeed;
             }
         }
 
@@ -77,7 +89,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
         if (PlayerInputs.Instance != null)
         {
-            PlayerInputs.Instance.OnMove += RequestOnMove;
+            PlayerInputs.Instance.OnMove += ChangeAnimatorValues;
         }
 
         transform.position = GameObject.Find("TestSpawnPoint").transform.position;
@@ -85,7 +97,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     public override void OnStopLocalPlayer()
     {
-        PlayerInputs.Instance.OnMove -= RequestOnMove;
+        PlayerInputs.Instance.OnMove -= ChangeAnimatorValues;
 
         base.OnStopLocalPlayer();
     }

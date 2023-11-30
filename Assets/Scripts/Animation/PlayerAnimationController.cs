@@ -14,31 +14,45 @@ public class PlayerAnimationController : NetworkBehaviour
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
     }
+<<<<<<< Updated upstream
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
         PlayerInputs.Instance.OnMove += RecieveInput;
+=======
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        //PlayerInputs.Instance.OnMove += RecieveInput;
+>>>>>>> Stashed changes
         PlayerInputs.Instance.StopMove += StopMovement;
     }
     public override void OnStopLocalPlayer()
     {
-        PlayerInputs.Instance.OnMove -= RecieveInput;
+        //PlayerInputs.Instance.OnMove -= RecieveInput;
         PlayerInputs.Instance.StopMove -= StopMovement;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         base.OnStopLocalPlayer();
     }
 
+    [Client]
     private void StopMovement()
     {
         Debug.Log("Stop Movement");
         UpdateAnimatorValues(0, 0, false);
     }
 
-    private void RecieveInput(Vector2 newMovement)
-    {
-        moveAmount = Mathf.Clamp01(Mathf.Abs(newMovement.x) + Mathf.Abs(newMovement.y));
-        UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
-    }
+    //private void RecieveInput(Vector2 newMovement)
+    //{
+    //    moveAmount = Mathf.Clamp01(Mathf.Abs(newMovement.x) + Mathf.Abs(newMovement.y));
+    //    UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
+    //}
 
+    [Client]
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         float snappedHorizontal;
