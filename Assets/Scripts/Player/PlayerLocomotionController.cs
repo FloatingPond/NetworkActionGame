@@ -9,7 +9,8 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     [SyncVar(hook = nameof(ChangeSprintInput))]
     [SerializeField] bool isSprinting = false;
-    private Vector3 moveDirection;
+    
+    [SerializeField] private Vector3 moveDirection;
 
     #region Client-Server Code (Commands)
 
@@ -70,7 +71,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     public float currentMoveSpeed = 0;
     [Command]
-    private void UpdatePlayerMovement(Vector2 moveVect)
+    public void UpdatePlayerMovement(Vector2 moveVect)
     {
         moveAmount = Mathf.Clamp01(Mathf.Abs(moveVect.x) + Mathf.Abs(moveVect.y));
         playerAnimationController.UpdateAnimatorValues(0, moveAmount, isSprinting);
@@ -98,8 +99,12 @@ public class PlayerLocomotionController : NetworkBehaviour
                 currentMoveSpeed = walkSpeed;
             }
         }
-        
-        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
+
+
+        if (moveDirection == Vector3.zero)
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        else
+            rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
     }
 
     #endregion

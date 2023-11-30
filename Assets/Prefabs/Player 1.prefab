@@ -704,6 +704,7 @@ MonoBehaviour:
   runSpeed: 7
   sprintSpeed: 12
   isSprinting: 0
+  moveDirection: {x: 0, y: 0, z: 0}
   moveAmount: 0
   currentMoveSpeed: 0
 --- !u!114 &4894622387890163876
@@ -721,6 +722,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerLoco: {fileID: 6130299170426225789}
   animator: {fileID: 6966362072174656617}
   moveAmount: 0
 --- !u!1 &1164118825854026113

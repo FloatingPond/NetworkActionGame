@@ -32,15 +32,15 @@ public class PlayerInputs : NetworkBehaviour
 
     }
 
-    private void OnEnable()
-    {
-        inputActions.Enable();
-    }
+    //private void OnEnable()
+    //{
+    //    inputActions.Enable();
+    //}
 
-    private void OnDisable()
-    {
-        inputActions.Disable();
-    }
+    //private void OnDisable()
+    //{
+    //    inputActions.Disable();
+    //}
 
     private void FixedUpdate()
     {

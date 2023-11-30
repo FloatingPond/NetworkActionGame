@@ -98,6 +98,7 @@ public class Player : NetworkBehaviour
         
         RequestAdditionToList();
         RequestNameChange(Steamworks.SteamFriends.GetPersonaName());
+        PlayerInputs.Instance.inputActions.Enable();
 
         //Cursor.lockState = CursorLockMode.Locked;
     }
@@ -105,6 +106,7 @@ public class Player : NetworkBehaviour
     public override void OnStopLocalPlayer()
     {
         //Cursor.lockState = CursorLockMode.Confined;
+        PlayerInputs.Instance.inputActions.Disable();
 
         base.OnStopLocalPlayer();
     }

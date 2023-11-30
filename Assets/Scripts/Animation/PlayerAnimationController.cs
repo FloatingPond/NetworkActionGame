@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerAnimationController : NetworkBehaviour
 {
+    [SerializeField] PlayerLocomotionController playerLoco;
+
     [SerializeField] Animator animator;
     int horizontal;
     int vertical;
@@ -20,15 +22,22 @@ public class PlayerAnimationController : NetworkBehaviour
         base.OnStartLocalPlayer();
         //PlayerInputs.Instance.OnMove += RecieveInput;
 
-        PlayerInputs.Instance.StopMove += StopMovement;
+        PlayerInputs.Instance.StopMove += RequestStopAnims;
     }
 
     public override void OnStopLocalPlayer()
     {
         //PlayerInputs.Instance.OnMove -= RecieveInput;
-        PlayerInputs.Instance.StopMove -= StopMovement;
+        PlayerInputs.Instance.StopMove -= RequestStopAnims;
 
         base.OnStopLocalPlayer();
+    }
+
+    [Client]
+    private void RequestStopAnims()
+    {
+        StopMovement();
+        playerLoco.UpdatePlayerMovement(Vector2.zero);
     }
 
     [Command]
