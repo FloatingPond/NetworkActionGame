@@ -31,7 +31,7 @@ public class PlayerAnimationController : NetworkBehaviour
         base.OnStopLocalPlayer();
     }
 
-    [Client]
+    [Command]
     private void StopMovement()
     {
         Debug.Log("Stop Movement");

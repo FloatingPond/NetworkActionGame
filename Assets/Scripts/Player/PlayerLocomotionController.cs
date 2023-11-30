@@ -84,6 +84,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     private void Update()
     {
+        if (!isLocalPlayer) return;
         HandleSprinting();
     }
 
