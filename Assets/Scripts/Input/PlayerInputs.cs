@@ -48,11 +48,10 @@ public class PlayerInputs : NetworkBehaviour
         {
             OnMove?.Invoke(inputActions.Movement.Move.ReadValue<Vector2>());
         }
-        //else 
-        //{
-        //    StopMove?.Invoke();
-        //}
-
+        else 
+        {
+            StopMove?.Invoke();
+        }
         FreeLook?.Invoke(inputActions.Movement.FreeLook.ReadValue<float>());
     }
 }

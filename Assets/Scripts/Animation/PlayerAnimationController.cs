@@ -20,17 +20,23 @@ public class PlayerAnimationController : NetworkBehaviour
         base.OnStartLocalPlayer();
         //PlayerInputs.Instance.OnMove += RecieveInput;
 
-        //PlayerInputs.Instance.StopMove += StopMovement;
+        PlayerInputs.Instance.StopMove += StopMovement;
     }
 
     public override void OnStopLocalPlayer()
     {
         //PlayerInputs.Instance.OnMove -= RecieveInput;
-        //PlayerInputs.Instance.StopMove -= StopMovement;
+        PlayerInputs.Instance.StopMove -= StopMovement;
 
         base.OnStopLocalPlayer();
     }
 
+    [Command]
+    private void StopMovement()
+    {
+        Debug.Log("Stop Movement");
+        UpdateAnimatorValues(0, 0, false);
+    }
 
     //private void RecieveInput(Vector2 newMovement)
     //{
