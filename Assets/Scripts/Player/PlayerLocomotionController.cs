@@ -8,13 +8,8 @@ public class PlayerLocomotionController : NetworkBehaviour
     [SerializeField, Header("Movement Speeds")] private float walkSpeed = 1.5f, runSpeed = 7f, sprintSpeed = 12f;
     [SerializeField] bool isSprinting = false;
     private Vector3 moveDirection;
+
     #region Client-Server Code (Commands)
-    
-    [Command]
-    private void RequestOnMove(Vector2 newVal)
-    {
-        UpdatePlayerMovement(newVal);
-    }
 
     #endregion
 
@@ -32,29 +27,31 @@ public class PlayerLocomotionController : NetworkBehaviour
             isSprinting = false;
         }
     }
-    public float moveAmount;
+
     [Client]
     public void ChangeAnimatorValues(Vector2 newVal)
     {
-        moveAmount = Mathf.Clamp01(Mathf.Abs(newVal.x) + Mathf.Abs(newVal.y));
-        playerAnimationController.UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
-        RequestOnMove(newVal);
+        UpdatePlayerMovement(newVal);
     }
 
     #endregion
 
     #region Server-Side Code
 
+    public float moveAmount;
     public float currentMoveSpeed = 0;
-    [Server]
+    [Command]
     private void UpdatePlayerMovement(Vector2 moveVect)
     {
+        moveAmount = Mathf.Clamp01(Mathf.Abs(moveVect.x) + Mathf.Abs(moveVect.y));
+        playerAnimationController.UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
+
         moveDirection = transform.forward * moveVect.y;
         moveDirection += transform.right * moveVect.x;
         moveDirection.Normalize();
         moveDirection.y = 0;
 
-        if (isSprinting)
+        if (PlayerInputs.Instance.sprint)
         {
             moveDirection *= sprintSpeed;
             currentMoveSpeed = sprintSpeed;
@@ -72,7 +69,7 @@ public class PlayerLocomotionController : NetworkBehaviour
                 currentMoveSpeed = walkSpeed;
             }
         }
-
+        
         rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
     }
 
@@ -80,7 +77,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     private void Update()
     {
-        HandleSprinting();
+        //HandleSprinting();
     }
 
     public override void OnStartLocalPlayer()

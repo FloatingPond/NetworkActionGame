@@ -1,12 +1,14 @@
+using Mirror;
 using System;
 using UnityEngine;
 
-public class PlayerInputs : MonoBehaviour
+public class PlayerInputs : NetworkBehaviour
 {
     public event Action<Vector2> OnMove, OnLook;
     public event Action<float> FreeLook;
     public event Action StopMove;
 
+    [SyncVar(hook = nameof(ChangeSprintInput))]
     public bool sprint = false;
 
     public PlayerInputActions inputActions;
@@ -33,6 +35,18 @@ public class PlayerInputs : MonoBehaviour
         inputActions.Movement.Sprint.canceled += ctx => sprint = false;
         #endregion
 
+    }
+
+    [Client]
+    private void ChangeSprintInput(bool _, bool newVal)
+    {
+        sprint = newVal;
+    }
+
+    [Server]
+    private void UpdateSprintInput(bool newVal)
+    {
+        sprint = newVal;
     }
 
     private void OnEnable()

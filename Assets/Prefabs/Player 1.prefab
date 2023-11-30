@@ -590,10 +590,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  clientAuthority: 1
+  clientAuthority: 0
   animator: {fileID: 6966362072174656617}
 --- !u!54 &3384257088644722626
 Rigidbody:
@@ -704,6 +704,8 @@ MonoBehaviour:
   runSpeed: 7
   sprintSpeed: 12
   isSprinting: 0
+  moveAmount: 0
+  currentMoveSpeed: 0
 --- !u!114 &4894622387890163876
 MonoBehaviour:
   m_ObjectHideFlags: 0
