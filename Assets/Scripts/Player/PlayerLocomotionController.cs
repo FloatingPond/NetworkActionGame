@@ -68,12 +68,26 @@ public class PlayerLocomotionController : NetworkBehaviour
         moveAmount = newVal;
     }
 
+    [SyncVar(hook = nameof(ChangeHasStopped))]
+    public bool hasStopped = false;
+    [Client]
+    private void ChangeHasStopped(bool _, bool newVal)
+    {
+        hasStopped = newVal;
+    }
+
+    [Server]
+    private void UpdateHasStopped(bool newVal)
+    {
+        hasStopped = newVal;
+    }
+
     public float currentMoveSpeed = 0;
     [Command]
     private void UpdatePlayerMovement(Vector2 moveVect)
     {
+        hasStopped = false;
         moveAmount = Mathf.Clamp01(Mathf.Abs(moveVect.x) + Mathf.Abs(moveVect.y));
-        playerAnimationController.UpdateAnimatorValues(0, moveAmount, isSprinting);
 
         moveDirection = transform.forward * moveVect.y;
         moveDirection += transform.right * moveVect.x;
@@ -98,8 +112,23 @@ public class PlayerLocomotionController : NetworkBehaviour
                 currentMoveSpeed = walkSpeed;
             }
         }
-        
+
+        if (moveAmount == 0 && !hasStopped)
+            hasStopped = true;
+
+        if (hasStopped)
+            StopMovement(moveVect, moveAmount);
+        else
+            playerAnimationController.UpdateAnimatorValues(0, moveAmount, isSprinting);
+
         rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
+    }
+
+    [Server]
+    private void StopMovement(Vector2 moveVect, float moveAmt)
+    {
+        Debug.Log("Stop Movement");
+        playerAnimationController.UpdateAnimatorValues(0, moveAmount, false);
     }
 
     #endregion
