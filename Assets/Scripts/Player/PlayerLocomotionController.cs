@@ -23,7 +23,7 @@ public class PlayerLocomotionController : NetworkBehaviour
         isSprinting = newVal;
     }
 
-    [Server]
+    [Command]
     private void UpdateSprintInput(bool newVal)
     {
         isSprinting = newVal;
@@ -35,11 +35,11 @@ public class PlayerLocomotionController : NetworkBehaviour
         //if (PlayerInputs.Instance.sprint && moveAmount > 0.5f)
         if (PlayerInputs.Instance.inputActions.Movement.Sprint.IsPressed() && moveAmount > 0.5f)
         {
-            isSprinting = true;
+            UpdateSprintInput(true);
         }
         else
         {
-            isSprinting = false;
+            UpdateSprintInput(false);
         }
     }
 
@@ -53,7 +53,21 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     #region Server-Side Code
 
+    [SyncVar(hook = nameof(ChangeMovementAmount))]
     public float moveAmount;
+
+    [Client]
+    private void ChangeMovementAmount(float _, float newVal)
+    {
+        moveAmount = newVal;
+    }
+
+    [Server]
+    private void UpdateMovementAmount(float newVal)
+    {
+        moveAmount = newVal;
+    }
+
     public float currentMoveSpeed = 0;
     [Command]
     private void UpdatePlayerMovement(Vector2 moveVect)
