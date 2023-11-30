@@ -44,7 +44,7 @@ public class PlayerAnimationController : NetworkBehaviour
     //    UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
     //}
 
-    [Client]
+    [Server]
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
     {
         float snappedHorizontal;

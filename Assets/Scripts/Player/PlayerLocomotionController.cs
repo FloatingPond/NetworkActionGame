@@ -21,10 +21,12 @@ public class PlayerLocomotionController : NetworkBehaviour
         //if (PlayerInputs.Instance.sprint && moveAmount > 0.5f)
         if (PlayerInputs.Instance.inputActions.Movement.Sprint.IsPressed() && moveAmount > 0.5f)
         {
+            isSprinting = true;
             UpdateSprint(true);
         }
         else
         {
+            isSprinting = false;
             UpdateSprint(false);
         }
     }
@@ -58,7 +60,7 @@ public class PlayerLocomotionController : NetworkBehaviour
         moveDirection.Normalize();
         moveDirection.y = 0;
 
-        if (PlayerInputs.Instance.sprint)
+        if (isSprinting)
         {
             moveDirection *= sprintSpeed;
             currentMoveSpeed = sprintSpeed;
