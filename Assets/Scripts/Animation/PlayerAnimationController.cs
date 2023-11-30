@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-public class PlayerAnimationController : MonoBehaviour
+public class PlayerAnimationController : NetworkBehaviour
 {
     [SerializeField] Animator animator;
     int horizontal;
@@ -14,17 +14,17 @@ public class PlayerAnimationController : MonoBehaviour
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
     }
-
-    private void OnEnable()
+    public override void OnStartLocalPlayer()
     {
+        base.OnStartLocalPlayer();
         PlayerInputs.Instance.OnMove += RecieveInput;
         PlayerInputs.Instance.StopMove += StopMovement;
     }
-
-    private void OnDisable()
+    public override void OnStopLocalPlayer()
     {
         PlayerInputs.Instance.OnMove -= RecieveInput;
         PlayerInputs.Instance.StopMove -= StopMovement;
+        base.OnStopLocalPlayer();
     }
 
     private void StopMovement()
