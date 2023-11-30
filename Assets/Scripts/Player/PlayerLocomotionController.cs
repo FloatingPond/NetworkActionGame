@@ -18,14 +18,21 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Client]
     private void HandleSprinting()
     {
-        if (PlayerInputs.Instance.sprint && moveAmount > 0.5f)
+        //if (PlayerInputs.Instance.sprint && moveAmount > 0.5f)
+        if (PlayerInputs.Instance.inputActions.Movement.Sprint.IsPressed() && moveAmount > 0.5f)
         {
-            isSprinting = true;
+            UpdateSprint(true);
         }
         else
         {
-            isSprinting = false;
+            UpdateSprint(false);
         }
+    }
+
+    [Command]
+    private void UpdateSprint(bool _)
+    {
+        PlayerInputs.Instance.sprint = _;
     }
 
     [Client]
@@ -77,7 +84,7 @@ public class PlayerLocomotionController : NetworkBehaviour
 
     private void Update()
     {
-        //HandleSprinting();
+        HandleSprinting();
     }
 
     public override void OnStartLocalPlayer()

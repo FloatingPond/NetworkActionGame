@@ -31,8 +31,8 @@ public class PlayerInputs : NetworkBehaviour
         inputActions.Movement.Move.performed += ctx => OnMove?.Invoke(ctx.ReadValue<Vector2>());
         inputActions.Movement.Move.canceled += ctx => StopMove?.Invoke();
         inputActions.Movement.Look.performed += ctx => OnLook?.Invoke(ctx.ReadValue<Vector2>());
-        inputActions.Movement.Sprint.performed += ctx => sprint = true;
-        inputActions.Movement.Sprint.canceled += ctx => sprint = false;
+        // inputActions.Movement.Sprint.performed += ctx => sprint = true;
+        // inputActions.Movement.Sprint.canceled += ctx => sprint = false;
         #endregion
 
     }
