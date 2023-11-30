@@ -59,6 +59,7 @@ public class GameManager : NetworkBehaviour
         RoundIntermission += UpdateRoundIntermission;
         SeekersReleased += UpdateSeekersRelease;
     }
+
     private void Update()
     {
         if (roundTimer > 0)
@@ -70,6 +71,7 @@ public class GameManager : NetworkBehaviour
             NextAction?.Invoke();
         }
     }
+
     [Client]
     private void ChangeRoundStatus(bool _, bool newBool)
     {
@@ -209,6 +211,9 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("Starting Round...");
         roundLive = true;
+
+        seekerDoor.transform.position = new Vector3(0, 0, 0);
+
         // Move Players to round start locations based on team
         foreach (Player seeker in seekers)
         {
@@ -272,17 +277,35 @@ public class GameManager : NetworkBehaviour
     public void UpdateRoundIntermission()
     {
         Debug.Log("Round Intermission...");
-        roundLive = false;
         UpdateWinnersTextRPC(null);
 
-        if (seekers.Count + hiders.Count < 2) return;
+        roundLive = false; // This allows players to join a team...
 
-        // Sort Players into new teams!
+        if (players.Count < 2) // If there aren't 2 or more players in the server...
+        {
+            NextAction = null;
+            return; // Don't automatically start the next round.
+        }
+        else
+        {
+            // Sort players into new teams...
+
+            /*
+
+            Get players list count...
+            Divide ^^ by 5 to get seeker amount
+            Choose a random number of players based on the playerlist.count / 5
+            Set all players to hiders...
+            The chosen players are set to seekers.
+
+            */
+
+
+            NextAction = RoundStart;
+        }
 
         // Start countdown to next round start
         float roundLength = 30f;
         roundTimer = roundLength;
-        NextAction = RoundStart;
-
     }
 }

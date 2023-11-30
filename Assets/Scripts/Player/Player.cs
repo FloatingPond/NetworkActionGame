@@ -43,8 +43,9 @@ public class Player : NetworkBehaviour
     {
         currentTeam = newTeam;
         Debug.Log("Team has been changed.");
+
         // Update Team UI
-        UIManager.Instance.UpdateTeamTextRPC(connectionToClient, currentTeam.ToString(), (int)currentTeam);
+        //UIManager.Instance.UpdateTeamTextRPC(connectionToClient, currentTeam.ToString(), (int)currentTeam);
     }
     
     [Client]
