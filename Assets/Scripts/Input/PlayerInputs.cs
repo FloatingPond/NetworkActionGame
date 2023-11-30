@@ -32,23 +32,13 @@ public class PlayerInputs : NetworkBehaviour
 
     }
 
-    //private void OnEnable()
-    //{
-    //    inputActions.Enable();
-    //}
-
-    //private void OnDisable()
-    //{
-    //    inputActions.Disable();
-    //}
-
     private void FixedUpdate()
     {
         if (inputActions.Movement.Move.IsPressed())
         {
             OnMove?.Invoke(inputActions.Movement.Move.ReadValue<Vector2>());
         }
-        else 
+        else
         {
             StopMove?.Invoke();
         }

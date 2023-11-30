@@ -51,7 +51,6 @@ public class Player : NetworkBehaviour
     private void ChangeName(string _, string newName)
     {
         name = playerName;
-       // UIManager.Instance.UpdatePlayerName(newName, (int)currentTeam);
     }
 
     [Client]

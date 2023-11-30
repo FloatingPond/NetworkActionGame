@@ -33,7 +33,6 @@ public class PlayerLocomotionController : NetworkBehaviour
     [Client]
     private void HandleSprinting()
     {
-        //if (PlayerInputs.Instance.sprint && moveAmount > 0.5f)
         if (PlayerInputs.Instance.inputActions.Movement.Sprint.IsPressed() && moveAmount > 0.5f)
         {
             UpdateSprintInput(true);
@@ -100,7 +99,6 @@ public class PlayerLocomotionController : NetworkBehaviour
             }
         }
 
-
         if (moveDirection == Vector3.zero)
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
         else
@@ -130,7 +128,6 @@ public class PlayerLocomotionController : NetworkBehaviour
     public override void OnStopLocalPlayer()
     {
         PlayerInputs.Instance.OnMove -= ChangeAnimatorValues;
-
         base.OnStopLocalPlayer();
     }
 }

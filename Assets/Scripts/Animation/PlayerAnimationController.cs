@@ -20,16 +20,12 @@ public class PlayerAnimationController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
-        //PlayerInputs.Instance.OnMove += RecieveInput;
-
         PlayerInputs.Instance.StopMove += RequestStopAnims;
     }
 
     public override void OnStopLocalPlayer()
     {
-        //PlayerInputs.Instance.OnMove -= RecieveInput;
         PlayerInputs.Instance.StopMove -= RequestStopAnims;
-
         base.OnStopLocalPlayer();
     }
 
@@ -46,12 +42,6 @@ public class PlayerAnimationController : NetworkBehaviour
         Debug.Log("Stop Movement");
         UpdateAnimatorValues(0, 0, false);
     }
-
-    //private void RecieveInput(Vector2 newMovement)
-    //{
-    //    moveAmount = Mathf.Clamp01(Mathf.Abs(newMovement.x) + Mathf.Abs(newMovement.y));
-    //    UpdateAnimatorValues(0, moveAmount, PlayerInputs.Instance.sprint);
-    //}
 
     [Server]
     public void UpdateAnimatorValues(float horizontalMovement, float verticalMovement, bool isSprinting)
@@ -108,7 +98,7 @@ public class PlayerAnimationController : NetworkBehaviour
             snappedHorizontal = horizontalMovement;
             snappedVertical = 2;
         }
-        animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.deltaTime);
-        animator.SetFloat(vertical, snappedVertical, 0.1f, Time.deltaTime);
+        animator.SetFloat(horizontal, snappedHorizontal, 0.1f, Time.fixedDeltaTime);
+        animator.SetFloat(vertical, snappedVertical, 0.1f, Time.fixedDeltaTime);
     }
 }
